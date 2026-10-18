@@ -1,0 +1,122 @@
+{
+  "name": "İlçe Bilmece",
+  "short_name": "İlçe Bilmece",
+  "id": "ilce-bilmece",
+  "description": "Türkiye'deki ilçelerin hangi ile bağlı olduğuna dair bilgi yarışması oyunu.",
+  "lang": "tr",
+  "dir": "ltr",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait",
+  "background_color": "#0b1120",
+  "theme_color": "#6366f1",
+  "categories": [
+    "game",
+    "education"
+  ],
+  "icons": [
+    {
+      "src": "logo/logo-48x48.png",
+      "sizes": "48x48",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "logo/logo-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "logo/logo-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "logo/logo-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "logo/logo-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "logo/logo-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "logo/logo-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "logo/logo-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "logo/logo-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "logo/logo-maskable-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "logo/logo-maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "logo/logo-monochrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "monochrome"
+    },
+    {
+      "src": "logo/logo-monochrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "monochrome"
+    },
+    {
+      "src": "logo/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "logo/screenshot-mockup-web.jpg",
+      "sizes": "1280x720",
+      "type": "image/jpeg",
+      "form_factor": "wide",
+      "label": "İlçe Bilmece"
+    },
+    {
+      "src": "logo/screenshot-mockup-mobile.jpg",
+      "sizes": "1080x1920",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "platform": "android",
+      "label": "İlçe Bilmece"
+    }
+  ]
+}

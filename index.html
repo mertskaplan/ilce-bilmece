@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Türkiye'deki ilçelerin hangi ile bağlı olduğuna dair bilgi yarışması oyunu.">
+    <meta name="keywords" content="oyun, ilçe bilmece, Türkiye, il, şehir, ilçe, ilçe tahmini, coğrafya oyunu, KPSS coğrafya">
+    <meta name="author" content="Mert S. Kaplan">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>İlçe Bilmece Oyunu</title>
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#f1f5f9">
+    <meta name="theme-color" content="#f1f5f9" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0b1120" media="(prefers-color-scheme: dark)">
+    <!-- TODO: Yayınladığınız gerçek alan adıyla aşağıdaki iki URL'yi güncelleyin -->
+    <link rel="canonical" href="https://lab.mertskaplan.com/ilce-bilmece/">
+
+    <!-- Open Graph / Twitter Card (Sosyal Paylaşım) -->
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="tr_TR">
+    <meta property="og:site_name" content="İlçe Bilmece">
+    <meta property="og:title" content="İlçe Bilmece - Türkiye Coğrafya Oyunu">
+    <meta property="og:description" content="Türkiye'deki ilçelerin hangi ile bağlı olduğuna dair bilgi yarışması oyunu. Klasik, zamana karşı ve bölgesel modlarla coğrafya bilgini test et!">
+    <meta property="og:url" content="https://lab.mertskaplan.com/ilce-bilmece/">
+    <meta property="og:logo" content="https://lab.mertskaplan.com/ilce-bilmece/logo/logo-512x512.png">
+    <meta property="og:image" content="https://lab.mertskaplan.com/ilce-bilmece/logo/cover.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="İlçe Bilmece - Türkiye Coğrafya Oyunu">
+    <meta name="twitter:site" content="@mertskaplan">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="İlçe Bilmece - Türkiye Coğrafya Oyunu">
+    <meta name="twitter:description" content="Türkiye'deki ilçelerin hangi ile bağlı olduğuna dair bilgi yarışması oyunu.">
+    <meta name="twitter:image" content="https://lab.mertskaplan.com/ilce-bilmece/logo/cover.jpg">
+
+    <!-- İkonlar ve Web Uygulaması Bildirimi (PWA) -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" sizes="any">
+    <link rel="icon" type="image/png" sizes="48x48" href="logo/logo-48x48.png" />
+    <link rel="apple-touch-icon" href="logo/logo-192x192.png">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Sahne: Oyun alanı ortada kalır; harita paneli yeterli alan varsa sağdaki boşluğa yerleşir -->
+    <div class="stage" id="stage">
+    <div class="container">
+        <canvas id="confetti-canvas"></canvas>
+
+        <!-- Top Header Bar -->
+        <div class="header-bar">
+            <div class="brand">
+                <span class="brand-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 42 36">
+                        <g>
+                            <g>
+                                <g>
+                                    <g>
+                                    <path fill="#818cf8" class="cls-1" d="M 25.4 28.5 C 26.5 28.5 28.1 28.7 28.9 29.4 C 29.3 29.8 29.2 30.4 28.8 30.8 C 28.5 31.1 28.1 31.3 27.8 31.4 C 26.9 31.8 25.9 32 25 32.1 C 22.6 32.4 20.2 32.4 17.8 31.8 C 16.9 31.6 15.6 31.2 15.1 30.4 C 14.4 28.8 17.8 28.5 18.8 28.5 C 18.3 28.6 17.634 28.844 17.234 28.944 C 16.734 29.144 15.124 29.566 15.7 30 C 15.7 30 16.3 30.4 16.7 30.5 C 18.9 31.1 21.2 31.1 23.5 31.1 C 24.7 31.1 27.7 30.8 28.5 30 C 28.7 29.8 28.2 29.5 28 29.4 C 27.2 28.9 26.3 28.833 25.4 28.533"></path>
+                                    <path fill="#818cf8" class="cls-1" d="M 30.6 12.4 C 30.023 7.034 25.5 3.1 20.2 3.5 C 14.9 3.9 10.9 8.6 11.3 13.9 C 11.8 19.8 17.7 26.6 21.1 29.7 C 21.8 30.3 22.7 30.2 23.2 29.5 C 25.8 26.2 30.989 18.355 30.589 12.755 L 30.6 12.4 Z M 22.945 27.989 C 22.445 28.589 21.8 28.6 21.2 28 C 18.2 25.3 12.9 19.3 12.5 14.1 C 12.1 9.4 15.6 5.3 20.3 4.9 C 25 4.5 29.1 8 29.5 12.7 C 29.9 17.7 25.3 24.9 23.1 27.8 L 22.945 27.989 Z"></path>
+                                    <path fill="#818cf8" class="cls-1" d="M 20.2 19.9 C 19.8 19.9 19.5 19.7 19.5 19.2 C 19.8 16.1 22 16.3 22.3 14 C 22.3 13.3 22 12.5 21.1 12.6 C 20.1 12.6 19.6 13.3 19.5 14.2 C 19.5 14.7 19.3 14.9 18.8 14.8 L 16.2 14.4 C 15.8 14.4 15.6 14.1 15.6 13.7 C 15.6 12.1 16.2 9 20.8 8.7 C 25.8 8.3 26.3 12.2 26.3 12.9 C 26.6 16.6 24 17.1 23.4 19 C 23.394 19.325 23.294 19.445 22.7 19.6 L 21.552 19.778 L 20.2 19.9 Z M 23.9 22.5 C 23.9 23.7 23.1 24.8 21.9 24.9 C 20.7 25 19.6 24.1 19.5 22.9 C 19.4 21.7 20.3 20.6 21.5 20.5 C 22.7 20.4 23.8 21.3 23.9 22.5"></path>
+                                    </g>
+                                </g>
+                            </g>
+                        </g>
+                    </svg>
+                </span>
+                <h1>İlçe Bilmece</h1>
+            </div>
+            <div class="header-actions">
+                <button class="icon-btn kbd-hint" id="shortcuts-btn" type="button" title="Klavye Kısayolları (Kısayol: ?)"
+                    aria-label="Klavye kısayollarını göster" aria-keyshortcuts="?" aria-haspopup="dialog">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><line x1="6" y1="10" x2="6" y2="10"/><line x1="10" y1="10" x2="10" y2="10"/><line x1="14" y1="10" x2="14" y2="10"/><line x1="18" y1="10" x2="18" y2="10"/><line x1="7" y1="14" x2="17" y2="14"/></svg>
+                </button>
+                <button class="icon-btn" id="sound-btn" type="button" title="Sesi Aç/Kapat" aria-label="Sesi aç veya kapat"
+                    aria-pressed="false"></button>
+                <button class="icon-btn" id="motion-btn" type="button" title="Hareket Efektlerini Aç/Kapat"
+                    aria-label="Hareket efektlerini aç veya kapat" aria-pressed="false"></button>
+                <button class="icon-btn" id="theme-btn" type="button" title="Temayı Değiştir"
+                    aria-label="Aydınlık ve karanlık tema arasında geçiş yap"></button>
+                <!-- Mobil Ayarlar Açılır Menü Butonu -->
+                <button class="icon-btn mobile-menu-toggle" id="mobile-menu-toggle" type="button" title="Menü"
+                    aria-label="Ayarlar menüsünü aç" aria-expanded="false">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobil Sağ Açılır Menü -->
+        <div class="mobile-drawer-backdrop" id="mobile-drawer-backdrop"></div>
+        <aside class="mobile-drawer" id="mobile-drawer" aria-label="Mobil Ayarlar Menüsü">
+            <div class="mobile-drawer-header">
+                <h3>Ayarlar</h3>
+                <button class="icon-btn mobile-drawer-close" id="mobile-drawer-close" type="button" title="Kapat" aria-label="Menüyü kapat">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="mobile-drawer-items">
+                <button class="mobile-drawer-btn" id="mobile-theme-btn" type="button">
+                    <span class="drawer-btn-icon" id="mobile-theme-icon"></span>
+                    <span class="drawer-btn-text">Karanlık / Aydınlık Mod</span>
+                </button>
+                <button class="mobile-drawer-btn" id="mobile-sound-btn" type="button">
+                    <span class="drawer-btn-icon" id="mobile-sound-icon"></span>
+                    <span class="drawer-btn-text">Ses Efektleri</span>
+                </button>
+                <button class="mobile-drawer-btn" id="mobile-motion-btn" type="button">
+                    <span class="drawer-btn-icon" id="mobile-motion-icon"></span>
+                    <span class="drawer-btn-text">Hareket Efektleri</span>
+                </button>
+                <button class="mobile-drawer-btn kbd-hint" id="mobile-shortcuts-btn" type="button">
+                    <span class="drawer-btn-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><line x1="6" y1="10" x2="6" y2="10"/><line x1="10" y1="10" x2="10" y2="10"/><line x1="14" y1="10" x2="14" y2="10"/><line x1="18" y1="10" x2="18" y2="10"/><line x1="7" y1="14" x2="17" y2="14"/></svg></span>
+                    <span class="drawer-btn-text">Klavye Kısayolları</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- PROMINENT GAME MODE SELECTOR BAR -->
+        <div class="mode-selector-bar" id="mode-selector-btn" role="button" tabindex="0" aria-haspopup="dialog"
+            aria-label="Oyun modunu değiştir. Aktif mod: Klasik Mod, 3 can."
+            title="Oyun modunu değiştirmek için tıklayın (Kısayol: M)" aria-keyshortcuts="m">
+            <div class="mode-info-left">
+                <div class="mode-icon-box" id="mode-active-icon">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                    </svg>
+                </div>
+                <div class="mode-text-box">
+                    <span class="mode-pre-label">Aktif Oyun Modu</span>
+                    <span class="mode-main-name" id="mode-active-name">Klasik Mod (3 Can)</span>
+                </div>
+            </div>
+            <div class="mode-change-badge">
+                <span>Modu Değiştir</span>
+                <kbd class="kbd kbd-hint" aria-hidden="true">M</kbd>
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6" />
+                </svg>
+            </div>
+        </div>
+
+        <!-- MAIN GAMEPLAY LAYOUT WRAPPER (Mobile vertical bar + arena) -->
+        <div class="game-layout-wrapper">
+            <!-- Dynamic Stats Bar -->
+            <div class="stats-bar" id="stats-bar">
+            <button class="stat-item mode-stat-btn" id="mobile-mode-stat-btn" type="button" title="Oyun Modunu Değiştir (Kısayol: M)" aria-keyshortcuts="m">
+                <span class="stat-label">Mod</span>
+                <span class="stat-value mode-stat-icon-wrapper" id="mobile-mode-icon">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </span>
+                <kbd class="kbd kbd-hint mode-stat-kbd" aria-hidden="true">M</kbd>
+            </button>
+            <div class="stat-item">
+                <span class="stat-label">Skor</span>
+                <span class="stat-value" id="score">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Rekor</span>
+                <span class="stat-value" id="record">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label" id="extra-stat-label">Can</span>
+                <span class="stat-value" id="extra-stat-val">
+                    <span class="hearts-container" id="hearts-display"></span>
+                </span>
+            </div>
+            <div class="stat-item" id="stat-item-progress">
+                <span class="stat-label">Soru</span>
+                <span class="stat-value" id="progress-text">0/0</span>
+            </div>
+        </div>
+
+        <!-- Record Progress Bar Section -->
+        <div class="record-progress-section" id="record-progress-section">
+            <div class="record-progress-header">
+                <div class="record-progress-left">
+                    <span class="record-icon-badge" id="record-icon">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                    </span>
+                    <span class="record-progress-title">Rekor Hedefi: <strong id="record-target-text">0</strong></span>
+                </div>
+                <div class="record-progress-right">
+                    <span class="record-progress-status" id="record-progress-status">0 / 0</span>
+                </div>
+            </div>
+            <div class="record-bar-container" id="record-bar-container">
+                <div id="progress-bar" class="record-bar-fill"></div>
+                <!-- Önceki rekor imleci (Rekor geçildiğinde bara oranla gerileyen işaretçi) -->
+                <div id="record-marker" class="record-prev-marker" style="display: none;">
+                    <div class="record-marker-flag">
+                        <span class="record-marker-pin"></span>
+                        <span class="record-marker-badge" id="record-marker-badge">Önceki: 0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- JOKERS SECTION (Clearly Styled as Power-Ups) -->
+        <div class="jokers-section" id="jokers-section-container">
+            <div class="jokers-header">
+                <span class="jokers-title-tag">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polygon
+                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                    </svg>
+                    Yardımcı Jokerler
+                </span>
+            </div>
+            <div class="jokers-grid">
+                <!-- Joker 1: 50% (Single Use) -->
+                <button class="joker-card amber" id="joker-fifty" type="button" title="2 Yanlış Şıkkı Eler (Kısayol: Q)" aria-keyshortcuts="q">
+                    <kbd class="kbd kbd-hint joker-kbd" aria-hidden="true">Q</kbd>
+                    <div class="joker-icon-circle">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="M12 2a10 10 0 0 1 0 20z" fill="currentColor" />
+                            </svg>
+                        </div>
+                    <span class="joker-name">%50 Eleme</span>
+                    <span class="joker-dots" id="fifty-badge" role="img" aria-label="Kalan hak: 1"></span>
+                </button>
+
+                <!-- Joker 2: Hint (3 Uses) -->
+                <button class="joker-card cyan" id="joker-hint" type="button"
+                    title="Plaka, Bölge, Lezzet, Ünlüler, Coğrafya veya Önemli Noktalar Hakkında İpucu Verir (Kısayol: W)" aria-keyshortcuts="w">
+                    <kbd class="kbd kbd-hint joker-kbd" aria-hidden="true">W</kbd>
+                    <div class="joker-icon-circle">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 18h6" />
+                                <path d="M10 22h4" />
+                                <path d="M12 2a7 7 0 0 0-7 7c0 2.5 1.5 4.5 3 6h8c1.5-1.5 3-3.5 3-6a7 7 0 0 0-7-7z" />
+                            </svg>
+                        </div>
+                    <span class="joker-name">İpucu Al</span>
+                    <span class="joker-dots" id="hint-badge" role="img" aria-label="Kalan hak: 3"></span>
+                </button>
+
+                <!-- Joker 3: Skip (Single Use) -->
+                <button class="joker-card purple" id="joker-skip" type="button"
+                    title="Cana Dokunmadan Soruyu Değiştirir (Kısayol: E)" aria-keyshortcuts="e">
+                    <kbd class="kbd kbd-hint joker-kbd" aria-hidden="true">E</kbd>
+                    <div class="joker-icon-circle">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="5 4 15 12 5 20 5 4" fill="currentColor" />
+                                <line x1="19" y1="5" x2="19" y2="19" stroke-width="2.5" />
+                            </svg>
+                        </div>
+                    <span class="joker-name">Pas Geç</span>
+                    <span class="joker-dots" id="skip-badge" role="img" aria-label="Kalan hak: 1"></span>
+                </button>
+            </div>
+        </div>
+
+        <!-- MAIN INTERACTIVE ARENA -->
+        <div id="game-arena">
+
+            <!-- 1. START SCREEN (Shown before the game begins) -->
+            <div id="start-screen" class="start-card">
+                <h2 class="start-title" id="start-mode-title">Klasik Mod</h2>
+                <p class="start-desc" id="start-mode-desc">3 can ve 5 joker hakkın var.<br />İlçeleri doğru tahmin et ve en yüksek skora ulaş!</p>
+
+                <!-- Yarım kalan oturumu sürdürme butonu (varsa gösterilir) -->
+                <div id="resume-container" style="display: none; width: 100%; max-width: 440px;">
+                    <button class="resume-action-btn" id="resume-game-btn" type="button">
+                        <span id="resume-btn-text">Devam Et</span>
+                    </button>
+                </div>
+
+                <button class="start-action-btn" id="start-game-btn" type="button">
+                    <span>Oyuna Başla</span>
+                </button>
+            </div>
+
+            <!-- 2. ACTIVE QUIZ SCREEN (Hidden until "Oyuna Başla" is clicked) -->
+            <div id="quiz-screen" style="display: none;">
+                <!-- Question Area -->
+                <div id="question-container">
+                    <div id="question">Soru yükleniyor...</div>
+                    <div id="clue-box"></div>
+                </div>
+
+                <!-- Options Grid -->
+                <div id="options"></div>
+
+                <!-- FEEDBACK ZONE:
+                     1. Next button directly under options
+                     2. Result status message below Next button
+                     3. District info card below result message
+                -->
+                <div id="feedback-area">
+                    <!-- 1. Sonraki Soru Butonu (Yanıt şıklarının hemen altında) -->
+                    <div id="next-btn-container">
+                        <button class="primary-action-btn" id="next-btn" type="button">
+                            <span>Sonraki Soru</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="5" y1="12" x2="19" y2="12" />
+                                <polyline points="12 5 19 12 12 19" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- 2. Doğru / Yanlış Mesajı (Sonraki soru butonunun altında) -->
+                    <div id="result-message" role="status" aria-live="polite"></div>
+
+                    <!-- 3. Bilgi Notu (Sadece yanlış yanıtta açılır) -->
+                    <div id="district-info" class="info-card"></div>
+                </div>
+            </div>
+
+        </div>
+        </div>
+
+        <!-- ================= MODALS ================= -->
+
+        <!-- Mode Selection Modal -->
+        <div class="modal-overlay" id="mode-modal" role="dialog" aria-modal="true" aria-labelledby="mode-modal-title">
+            <h2 class="modal-title" id="mode-modal-title">Oyun Modu Seç</h2>
+            <p class="modal-desc">Bilgini farklı dinamiklerle test et veya belirli bir bölgeye odaklan!</p>
+            <div class="mode-grid">
+                <div class="mode-card" data-mode="classic" role="button" tabindex="0" aria-label="Klasik Mod: 3 can hakkı, serbest tempo">
+                    <div class="mode-card-header">
+                        <div class="mode-card-icon">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                            </svg>
+                        </div>
+                        <span class="mode-badge">Standart</span>
+                    </div>
+                    <div class="mode-card-title"><span class="key-badge kbd kbd-hint" aria-hidden="true">1</span> Klasik Mod</div>
+                    <div class="mode-card-desc">3 can hakkı, serbest tempo. Yanlış cevaplarda ilçe bilgisi öğren.</div>
+                </div>
+
+                <div class="mode-card" data-mode="time" role="button" tabindex="0" aria-label="Zamana Karşı Modu: 60 saniye süre">
+                    <div class="mode-card-header">
+                        <div class="mode-card-icon">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg>
+                        </div>
+                        <span class="mode-badge">Hızlı</span>
+                    </div>
+                    <div class="mode-card-title"><span class="key-badge kbd kbd-hint" aria-hidden="true">2</span> Zamana Karşı</div>
+                    <div class="mode-card-desc">60 saniye süre! Sorular otomatik geçer, son saniyeler heyecanlıdır.
+                    </div>
+                </div>
+
+                <div class="mode-card" data-mode="regional" role="button" tabindex="0" aria-label="Bölgesel Mod: Coğrafi bölgeye göre çalış">
+                    <div class="mode-card-header">
+                        <div class="mode-card-icon">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6" />
+                                <line x1="8" y1="2" x2="8" y2="18" />
+                                <line x1="16" y1="6" x2="16" y2="22" />
+                            </svg>
+                        </div>
+                        <span class="mode-badge">Pratik</span>
+                    </div>
+                    <div class="mode-card-title"><span class="key-badge kbd kbd-hint" aria-hidden="true">3</span> Bölgesel Mod</div>
+                    <div class="mode-card-desc">Marmara, Ege, Karadeniz... İstediğin bölgenin ilçelerini çalış.</div>
+                </div>
+
+                <div class="mode-card disabled" title="Daha sonra gelecek bir özellik" aria-disabled="true">
+                    <div class="mode-card-header">
+                        <div class="mode-card-icon" style="opacity: 0.6;">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                                <line x1="16" y1="2" x2="16" y2="6" />
+                                <line x1="8" y1="2" x2="8" y2="6" />
+                                <line x1="3" y1="10" x2="21" y2="10" />
+                            </svg>
+                        </div>
+                        <span class="mode-badge">Kilitli</span>
+                    </div>
+                    <div class="mode-card-title">Günün Bilmecesi</div>
+                    <div class="mode-card-desc">Çok yakında! Her gün herkes için aynı 10 soru.</div>
+                </div>
+            </div>
+            <button class="primary-action-btn" style="padding: 10px 24px; width: auto; font-size: 0.9rem;"
+                onclick="closeModal('mode-modal')">Kapat</button>
+        </div>
+
+        <!-- Regional Selection Modal -->
+        <div class="modal-overlay" id="region-modal" role="dialog" aria-modal="true" aria-labelledby="region-modal-title">
+            <h2 class="modal-title" id="region-modal-title">Bölge Seç</h2>
+            <p class="modal-desc">Hangi coğrafi bölgenin ilçelerini bilmek istersin?</p>
+            <div class="region-grid">
+                <button class="region-btn" data-region="Marmara"><span class="key-badge kbd kbd-hint" aria-hidden="true">1</span> Marmara Bölgesi</button>
+                <button class="region-btn" data-region="Ege"><span class="key-badge kbd kbd-hint" aria-hidden="true">2</span> Ege Bölgesi</button>
+                <button class="region-btn" data-region="Akdeniz"><span class="key-badge kbd kbd-hint" aria-hidden="true">3</span> Akdeniz Bölgesi</button>
+                <button class="region-btn" data-region="İç Anadolu"><span class="key-badge kbd kbd-hint" aria-hidden="true">4</span> İç Anadolu</button>
+                <button class="region-btn" data-region="Karadeniz"><span class="key-badge kbd kbd-hint" aria-hidden="true">5</span> Karadeniz Bölgesi</button>
+                <button class="region-btn" data-region="Doğu Anadolu"><span class="key-badge kbd kbd-hint" aria-hidden="true">6</span> Doğu Anadolu</button>
+                <button class="region-btn" data-region="Güneydoğu Anadolu"><span class="key-badge kbd kbd-hint" aria-hidden="true">7</span> Güneydoğu Anadolu</button>
+                <button class="region-btn" data-region="all" style="border-color: var(--primary);"><span class="key-badge kbd kbd-hint" aria-hidden="true">8</span> Tüm Bölgeler
+                    (Karışık)</button>
+            </div>
+            <button class="primary-action-btn" style="padding: 10px 24px; width: auto; font-size: 0.9rem;"
+                onclick="closeModal('region-modal')">Geri Dön</button>
+        </div>
+
+        <!-- Keyboard Shortcuts Modal -->
+        <div class="modal-overlay" id="shortcuts-modal" role="dialog" aria-modal="true" aria-labelledby="shortcuts-modal-title">
+            <h2 class="modal-title" id="shortcuts-modal-title">Klavye Kısayolları</h2>
+            <p class="modal-desc">Oyunu baştan sona klavyeyle oynayabilirsin.</p>
+            <dl class="shortcut-list">
+                <div class="shortcut-row"><dt><kbd class="kbd">1</kbd><span class="kbd-sep">–</span><kbd class="kbd">4</kbd></dt><dd>Şık seç</dd></div>
+                <div class="shortcut-row"><dt><kbd class="kbd">Q</kbd></dt><dd>%50 Eleme jokeri</dd></div>
+                <div class="shortcut-row"><dt><kbd class="kbd">W</kbd></dt><dd>İpucu jokeri</dd></div>
+                <div class="shortcut-row"><dt><kbd class="kbd">E</kbd></dt><dd>Pas Geç jokeri</dd></div>
+                <div class="shortcut-row"><dt><kbd class="kbd">Enter</kbd><span class="kbd-sep">/</span><kbd class="kbd">Space</kbd></dt><dd>Oyuna başla, sonraki soru, tekrar oyna</dd></div>
+                <div class="shortcut-row"><dt><kbd class="kbd">M</kbd></dt><dd>Oyun modu seçimini aç / kapat</dd></div>
+                <div class="shortcut-row"><dt><kbd class="kbd">1</kbd><span class="kbd-sep">–</span><kbd class="kbd">8</kbd></dt><dd>Mod ve bölge pencerelerinde seçim yap</dd></div>
+                <div class="shortcut-row"><dt><kbd class="kbd">Tab</kbd><span class="kbd-sep">/</span><kbd class="kbd">Shift</kbd><span class="kbd-sep">+</span><kbd class="kbd">Tab</kbd></dt><dd>Butonlar arasında gezin</dd></div>
+                <div class="shortcut-row"><dt><kbd class="kbd">Esc</kbd></dt><dd>Açık pencereyi kapat</dd></div>
+                <div class="shortcut-row"><dt><kbd class="kbd">?</kbd></dt><dd>Bu pencereyi aç / kapat</dd></div>
+            </dl>
+            <button class="primary-action-btn" style="padding: 10px 24px; width: auto; font-size: 0.9rem;"
+                onclick="closeModal('shortcuts-modal')">Kapat</button>
+        </div>
+
+        <!-- Game Over Modal -->
+        <div class="modal-overlay" id="gameover-modal" role="dialog" aria-modal="true" aria-labelledby="gameover-title">
+            <h2 class="modal-title" id="gameover-title">Oyun Bitti!</h2>
+            <p class="modal-desc" id="gameover-desc">Performans özeti:</p>
+
+            <div class="stats-bar" style="width: 100%; max-width: 440px; margin-bottom: 12px;">
+                <div class="stat-item">
+                    <span class="stat-label">Doğru</span>
+                    <span class="stat-value" style="color: var(--success);" id="final-correct">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Yanlış</span>
+                    <span class="stat-value" style="color: var(--error);" id="final-wrong">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Başarı</span>
+                    <span class="stat-value" id="final-accuracy">0%</span>
+                </div>
+            </div>
+
+            <!-- Mistakes Review List -->
+            <div style="width: 100%; max-width: 480px; text-align: left;">
+                <strong style="font-size: 0.88rem; color: var(--text-muted); display: block; margin-bottom: 6px;">Yanlış Cevaplanan İlçeler:</strong>
+                <div class="review-box" id="mistakes-list">
+                    <div style="color: var(--text-muted); text-align: center; padding: 20px;">İmkansızı başardın ve hiç yanlış yapmadın! Harika bir tur.</div>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 14px;">
+                <button class="primary-action-btn" id="restart-btn" style="width: auto; padding: 12px 24px;">Tekrar Oyna</button>
+                <button class="primary-action-btn"
+                    style="background: var(--btn-bg); border: 1px solid var(--btn-border); color: var(--text-main); width: auto; padding: 12px 24px;"
+                    id="gameover-change-mode-btn"
+                    onclick="changeModeFromGameOver()">Mod Değiştir</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Harita Paneli (Bilgisayarda sağda; yer yoksa bilgi notunun altına taşınır) -->
+    <aside class="map-panel" id="map-panel" aria-label="Haritalar">
+        <section class="map-card">
+            <div class="map-card-title" id="province-map-title">Türkiye Haritası</div>
+            <div class="map-svg province-map" id="province-map" role="img" aria-label="Türkiye illeri haritası"></div>
+            <div class="map-legend" id="province-map-legend"></div>
+        </section>
+        <section class="map-card">
+            <div class="map-card-title" id="district-map-title">İl Haritası</div>
+            <div class="map-svg district-map" id="district-map" role="img" aria-label="İlçe haritası">
+                <p class="map-placeholder">Yanıt verince doğru ilin haritası burada görünecek.</p>
+            </div>
+            <div class="map-legend" id="district-map-legend"></div>
+        </section>
+    </aside>
+    </div>
+
+    <script src="datasets.js"></script>
+    <script src="scripts.js"></script>
+</body>
+
+</html>
