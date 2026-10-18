@@ -86,6 +86,10 @@ Veri setine ilçe eklerken veya bir ilçenin adını değiştirirken ilgili hari
 1. `sw.js` dosyasındaki `CACHE_NAME` sürümünü artırın (ör. `ilce-bilmece-v2.1.1` → `ilce-bilmece-v2.1.2`). Sürüm değişmezse kullanıcılar önbellekteki eski sürümü görmeye devam eder.
 2. Tüm dosyaları `maps/` klasörü dahil sunucuya yükleyin.
 
+## Lisans
+
+Bu proje [GNU Genel Kamu Lisansı v3.0 (GPL-3.0)](LICENSE) ile lisanslanmıştır. Yazılımı bu lisansın koşulları altında kullanabilir, değiştirebilir ve dağıtabilirsiniz. Değiştirilmiş sürümlerin de aynı lisansla paylaşılması gerekir.
+
 ## Geliştirici
 
 [Mert S. Kaplan](https://mertskaplan.com)
