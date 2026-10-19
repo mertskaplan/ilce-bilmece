@@ -60,7 +60,8 @@ body {
     background: var(--bg-gradient);
     background-attachment: fixed;
     min-height: 100vh;
-    min-height: 100dvh;
+    /* --app-height: görünür alanın gerçek yüksekliği (scripts.js); yoksa 100dvh */
+    min-height: var(--app-height, 100dvh);
     color: var(--text-main);
     display: flex;
     justify-content: center;
@@ -852,11 +853,15 @@ h1 {
 
 @media (max-width: 600px) {
     body {
-        padding: 8px 6px 16px;
+        /* Çentik ve sistem navigasyon çubuğu altında kalan alanlar boşluğa eklenir */
+        padding: calc(8px + env(safe-area-inset-top)) 6px calc(16px + env(safe-area-inset-bottom));
     }
     .container {
         padding: 14px 10px;
-        min-height: calc(100dvh - 24px);
+        min-height: calc(var(--app-height, 100dvh) - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+        /* Oyun alanı kalan yüksekliği doldurur (sabit piksel çıkarımı yerine) */
+        display: flex;
+        flex-direction: column;
     }
 
     .header-bar {
@@ -901,7 +906,7 @@ h1 {
         grid-template-rows: min-content;
         gap: 8px;
         align-items: start;
-        min-height: calc(100dvh - 100px);
+        flex: 1 1 auto;
     }
 
     /* Sol dikey bar */
@@ -1625,7 +1630,7 @@ h1 {
 
     .container {
         padding: 18px 22px;
-        min-height: min(640px, calc(100dvh - 40px));
+        min-height: min(640px, calc(var(--app-height, 100dvh) - 40px));
     }
 
     .header-bar {

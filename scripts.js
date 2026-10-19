@@ -1,3 +1,18 @@
+/* ================= 0. GERÇEK EKRAN YÜKSEKLİĞİ ================= */
+// Android Chrome'da PWA olarak açılan sayfa yenilendiğinde 100vh/100dvh birimleri sistem
+// navigasyon çubuğunu da içerecek şekilde hesaplanabiliyor; sayfa gereksiz yere kaydırılabilir
+// hale geliyor. Görünür alanın ölçülen yüksekliği --app-height olarak CSS'e aktarılır.
+function updateAppHeight() {
+    document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`);
+}
+
+updateAppHeight();
+window.addEventListener('resize', updateAppHeight);
+window.addEventListener('orientationchange', updateAppHeight);
+// Geri/ileri önbelleğinden dönüşte ve yenileme sonrası geç gelen boyut değişiminde tekrar ölç
+window.addEventListener('pageshow', updateAppHeight);
+window.addEventListener('load', () => requestAnimationFrame(updateAppHeight));
+
 /* ================= 1. SVG İKON KÜTÜPHANESİ ================= */
 const SVG_ICONS = {
     soundOn: `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>`,
