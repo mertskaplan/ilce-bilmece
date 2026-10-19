@@ -5,7 +5,7 @@
   "description": "Türkiye'deki ilçelerin hangi ile bağlı olduğuna dair bilgi yarışması oyunu.",
   "lang": "tr",
   "dir": "ltr",
-  "start_url": "./index.html",
+  "start_url": "./index.html?utm_source=pwa",
   "scope": "./",
   "display": "standalone",
   "display_override": ["standalone", "minimal-ui"],

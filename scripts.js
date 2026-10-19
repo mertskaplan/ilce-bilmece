@@ -27,6 +27,7 @@ const SVG_ICONS = {
     shield: `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
     clock: `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
     target: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>`,
+    calendar: `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`,
     map: `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>`,
     car: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>`,
     compass: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>`,
@@ -122,7 +123,7 @@ function playFanfare() {
 }
 
 /* ================= 4. OYUN DURUMU (Game State) ================= */
-let currentMode = 'classic'; // 'classic' | 'time' | 'regional'
+let currentMode = 'classic'; // 'classic' | 'time' | 'regional' | 'daily'
 let selectedRegion = 'all';
 let score = 0; // 1'ER 1'ER İLERLER (DOĞRU SAYISI)
 
@@ -210,6 +211,11 @@ function buildQuestionPool() {
 const SESSION_KEY = 'ilce_active_session';
 
 function saveGameSession() {
+    // Günün Bilmecesi kendi kaydını tutar (genel "Devam Et" oturumuna karışmaz)
+    if (currentMode === 'daily') {
+        saveDailyState();
+        return;
+    }
     if (!isGameStarted || (currentMode !== 'time' && lives <= 0)) return;
     try {
         // Süreli modda kalan süre, son tik yerine bitiş zamanından hesaplanır
@@ -415,7 +421,12 @@ function prepareGame(mode = 'classic', region = 'all') {
     const startTitleEl = document.getElementById('start-mode-title');
     const startDescEl = document.getElementById('start-mode-desc');
 
-    if (currentMode === 'time') {
+    document.body.dataset.mode = currentMode;
+    document.querySelector('#start-game-btn span').innerText = 'Oyuna Başla';
+
+    if (currentMode === 'daily') {
+        prepareDailyScreen();
+    } else if (currentMode === 'time') {
         timeLeft = 60;
         document.getElementById('extra-stat-label').innerText = 'Süre';
         document.getElementById('extra-stat-val').innerHTML = `<span class="timer-val" id="time-display">60s</span>`;
@@ -454,8 +465,8 @@ function prepareGame(mode = 'classic', region = 'all') {
         }
     }
 
-    // Soru havuzunu oluştur ama gösterme
-    questionPool = buildQuestionPool();
+    // Soru havuzunu oluştur ama gösterme (Günün Bilmecesi'nin havuzu başlarken kurulur)
+    questionPool = currentMode === 'daily' ? [] : buildQuestionPool();
     resetMaps();
 
     // Mod seçici çubuğunun erişilebilirlik etiketi aktif moda göre güncellenir
@@ -489,6 +500,10 @@ function prepareGame(mode = 'classic', region = 'all') {
 
 /* "Oyuna Başla" butonuna basınca tetiklenir */
 function startGame() {
+    if (currentMode === 'daily') {
+        startDailyGame();
+        return;
+    }
     clearGameSession(); // Yeni oyunda eski oturumu sıfırla
     isGameStarted = true;
     setJokersEnabled(true);
@@ -566,9 +581,10 @@ function startTimer(duration = 60) {
 
 /* ================= 6b. SEÇENEK ÜRETİMİ & KARIŞTIRMA ================= */
 // Fisher-Yates algoritması ile adil karıştırma (sort(()=>Math.random()-0.5) yanlıdır)
-function shuffleArray(arr) {
+// rng: Günün Bilmecesi'nde herkese aynı sonucu veren tohumlu üreteç, diğer modlarda Math.random
+function shuffleArray(arr, rng = Math.random) {
     for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
+        const j = Math.floor(rng() * (i + 1));
         const tmp = arr[i];
         arr[i] = arr[j];
         arr[j] = tmp;
@@ -579,7 +595,8 @@ function shuffleArray(arr) {
 // Bir soru için 1 doğru + 3 yanlış il seçeneği üretir.
 // ÖNEMLİ: Aynı ada sahip ilçesi bulunan başka bir il, ASLA yanlış şık olarak eklenmez
 // (aksi halde sorunun birden fazla doğru cevabı olabilir).
-function generateOptions(question) {
+// regional: Bölgesel Mod'da yanlış şıklar aynı bölgeden seçilir (Günün Bilmecesi'nde her zaman false)
+function generateOptions(question, rng = Math.random, regional = currentMode === 'regional') {
     const options = [question.il];
 
     // Aday: doğru ilden farklı ve aynı adlı ilçeyi barındırmayan iller
@@ -589,7 +606,7 @@ function generateOptions(question) {
     const questionRegion = question.bolge || (ilEkstraBilgiler[question.il] ? ilEkstraBilgiler[question.il].bolge : "");
     let candidatePool = ilceler;
 
-    if (currentMode === 'regional' && questionRegion) {
+    if (regional && questionRegion) {
         const regionalList = ilceler.filter(item => {
             const meta = ilEkstraBilgiler[item.il];
             return meta && meta.bolge === questionRegion;
@@ -605,17 +622,511 @@ function generateOptions(question) {
         pool = ilceler.filter(isEligible);
     }
 
-    shuffleArray(pool);
+    shuffleArray(pool, rng);
     for (let i = 0; i < pool.length && options.length < 4; i++) {
         options.push(pool[i].il);
     }
 
-    shuffleArray(options);
+    shuffleArray(options, rng);
     return options;
 }
 
+/* ================= 6c. GÜNÜN BİLMECESİ: SORU ÜRETİMİ ================= */
+// Sunucu olmadan herkese aynı 10 soru: sorular ve şıklar, bulmaca numarasından tohumlanan
+// bir rastgele sayı üreteciyle üretilir. Aynı numara her tarayıcıda aynı bulmacayı verir.
+//
+// Seçim yöntemi: 922 ilçe her "tur" için tohumlu olarak karıştırılır ve her gün sıradaki
+// 10 ilçe sorulur. Böylece bir tur (~92 gün) boyunca hiçbir ilçe tekrar sorulmaz; tur
+// bitince yeni tohumla yeni bir tur başlar. Üretim süresizdir (5 yıl ve sonrası hazırdır).
+const DAILY_START_UTC = Date.UTC(2026, 9, 19); // 19.10.2026 = Günün Bilmecesi #1
+const DAILY_QUESTION_COUNT = 10;
+const DAILY_SEED = 0x1BCE2026;
+const DAILY_TIME_ZONE = 'Europe/Istanbul';
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+// Mulberry32: küçük, hızlı ve tüm tarayıcılarda aynı sonucu veren tohumlu üreteç
+function mulberry32(seed) {
+    let a = seed >>> 0;
+    return function () {
+        a = (a + 0x6D2B79F5) >>> 0;
+        let t = a;
+        t = Math.imul(t ^ (t >>> 15), t | 1);
+        t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+}
+
+// Türkiye saatine göre bugünün tarihi (yeni bulmaca İstanbul'da gece yarısı açılır)
+function getIstanbulDateParts(now = new Date()) {
+    const parts = {};
+    new Intl.DateTimeFormat('en-US', {
+        timeZone: DAILY_TIME_ZONE, year: 'numeric', month: 'numeric', day: 'numeric'
+    }).formatToParts(now).forEach(p => { parts[p.type] = parseInt(p.value, 10); });
+    return { year: parts.year, month: parts.month, day: parts.day };
+}
+
+function getDailyNumber(now = new Date()) {
+    const { year, month, day } = getIstanbulDateParts(now);
+    return Math.max(1, Math.round((Date.UTC(year, month - 1, day) - DAILY_START_UTC) / DAY_MS) + 1);
+}
+
+// Bulmaca numarasına karşılık gelen tarih (ör. "19 Ekim 2026")
+function formatDailyDate(number) {
+    return new Intl.DateTimeFormat('tr-TR', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
+        .format(new Date(DAILY_START_UTC + (number - 1) * DAY_MS));
+}
+
+// Sonraki bulmacaya kalan süre (ms). Türkiye 2016'dan beri yıl boyu UTC+3 kullanır.
+function msUntilNextDaily(now = new Date()) {
+    const { year, month, day } = getIstanbulDateParts(now);
+    return Date.UTC(year, month - 1, day + 1) - 3 * 60 * 60 * 1000 - now.getTime();
+}
+
+// Sabit sıralı ilçe listesi: veri setindeki dizilişten bağımsız olsun diye plaka ve ada göre
+// (yerel ayara bağlı localeCompare yerine kod birimi karşılaştırmasıyla) sıralanır
+let dailyDistrictList = null;
+function getDailyDistrictList() {
+    if (!dailyDistrictList) {
+        dailyDistrictList = [];
+        ilceler.forEach(ilObj => {
+            const meta = ilEkstraBilgiler[ilObj.il];
+            ilObj.ilce.forEach(ilceAdi => dailyDistrictList.push({
+                il: ilObj.il,
+                ilce: ilceAdi,
+                id: `${ilObj.il}_${ilceAdi}`,
+                bolge: meta ? meta.bolge : '',
+                key: `${meta ? meta.plaka : '99'}|${ilceAdi}`
+            }));
+        });
+        dailyDistrictList.sort((a, b) => (a.key < b.key ? -1 : a.key > b.key ? 1 : 0));
+    }
+    return dailyDistrictList;
+}
+
+function getDailyDaysPerCycle() {
+    return Math.floor(getDailyDistrictList().length / DAILY_QUESTION_COUNT);
+}
+
+// Bir turun ham (düzeltilmemiş) karışık sırası
+function getRawDailyCycle(cycle) {
+    return shuffleArray([...getDailyDistrictList()], mulberry32(DAILY_SEED + cycle * 7919));
+}
+
+// Turun son günü ile bir sonraki turun ilk günü aynı ilçeyi içermesin diye, yeni turun
+// ilk 10 ilçesinden önceki turun son gününde de geçenler turun ortasındakilerle yer değiştirir.
+// Yer değiştirme yalnızca ilk gün ile ortadaki günler arasında olduğundan turun son günü
+// hiç değişmez; bu yüzden önceki turun yalnızca ham sırası yeterlidir.
+const dailyCycleCache = new Map();
+function getDailyCycle(cycle) {
+    if (dailyCycleCache.has(cycle)) return dailyCycleCache.get(cycle);
+    const order = getRawDailyCycle(cycle);
+    if (cycle > 0) {
+        const days = getDailyDaysPerCycle();
+        const prevLastDay = new Set(getRawDailyCycle(cycle - 1)
+            .slice((days - 1) * DAILY_QUESTION_COUNT, days * DAILY_QUESTION_COUNT)
+            .map(q => q.id));
+        let swapIndex = Math.floor(days / 2) * DAILY_QUESTION_COUNT;
+        for (let i = 0; i < DAILY_QUESTION_COUNT; i++) {
+            if (!prevLastDay.has(order[i].id)) continue;
+            while (prevLastDay.has(order[swapIndex].id)) swapIndex++;
+            [order[i], order[swapIndex]] = [order[swapIndex], order[i]];
+            swapIndex++;
+        }
+    }
+    dailyCycleCache.set(cycle, order);
+    return order;
+}
+
+// N numaralı bulmacanın 10 sorusu ve her sorunun sabit şıkları
+function buildDailyPuzzle(number) {
+    const days = getDailyDaysPerCycle();
+    const dayIndex = number - 1;
+    const cycle = Math.floor(dayIndex / days);
+    const start = (dayIndex % days) * DAILY_QUESTION_COUNT;
+    return getDailyCycle(cycle).slice(start, start + DAILY_QUESTION_COUNT).map((q, i) => ({
+        il: q.il,
+        ilce: q.ilce,
+        id: q.id,
+        bolge: q.bolge,
+        options: generateOptions(q, mulberry32(DAILY_SEED ^ Math.imul(number, 1000003) ^ (i + 1)), false)
+    }));
+}
+
+/* ================= 6d. GÜNÜN BİLMECESİ: OYUN DURUMU, İSTATİSTİK VE PAYLAŞIM ================= */
+// Kurallar: herkese aynı 10 soru, can yok (10 sorunun hepsi cevaplanır), yalnızca İpucu jokeri
+// (3 hak). Günde bir kez oynanır; sonuç ve istatistikler bu cihazda saklanır.
+const DAILY_STATE_KEY = 'ilce_daily_state';
+const DAILY_STATS_KEY = 'ilce_daily_stats';
+const DAILY_JOKERS = { fifty: 0, hint: 3, skip: 0 };
+
+let dailyNumber = null;
+let dailyPuzzle = null;
+let dailyState = null;        // { number, answers: [{ ilce, il, guessed, correct, hint }], jokers, elapsedMs, ... }
+let dailySegmentStart = null; // Süre yalnızca soru ekrandayken ve cevaplanmamışken işler
+let dailyCountdownTimer = null;
+
+function loadStoredJSON(key) {
+    try {
+        const raw = safeGetItem(key);
+        return raw ? JSON.parse(raw) : null;
+    } catch (e) {
+        return null;
+    }
+}
+
+function loadDailyState(number) {
+    const state = loadStoredJSON(DAILY_STATE_KEY);
+    return state && state.number === number && Array.isArray(state.answers) ? state : null;
+}
+
+function createDailyState(number) {
+    return {
+        number,
+        answers: [],
+        jokers: { ...DAILY_JOKERS },
+        currentHint: false,   // Mevcut soruda ipucu kullanıldı mı?
+        clueHtml: '',
+        usedClueTypes: [],
+        elapsedMs: 0,
+        finished: false
+    };
+}
+
+function saveDailyState() {
+    if (!dailyState) return;
+    if (!dailyState.finished && isGameStarted) {
+        dailyState.jokers = { ...jokers };
+        // Cevaplanmış sorunun ipucu saklanmaz (yenilemede sıradaki soruya taşınmasın)
+        dailyState.clueHtml = isAnswered ? '' : document.getElementById('clue-box').innerHTML;
+        dailyState.usedClueTypes = isAnswered ? [] : usedClueTypesForQuestion;
+    }
+    safeSetItem(DAILY_STATE_KEY, JSON.stringify(dailyState));
+}
+
+function startDailyClock() {
+    if (currentMode === 'daily' && isGameStarted && !isAnswered && dailySegmentStart === null) {
+        dailySegmentStart = Date.now();
+    }
+}
+
+function stopDailyClock() {
+    if (dailySegmentStart !== null && dailyState) {
+        dailyState.elapsedMs += Date.now() - dailySegmentStart;
+    }
+    dailySegmentStart = null;
+}
+
+// Sekme arka plana atılınca süre durur, geri gelince devam eder
+document.addEventListener('visibilitychange', () => {
+    if (currentMode !== 'daily') return;
+    if (document.visibilityState === 'hidden') {
+        stopDailyClock();
+        saveDailyState();
+    } else {
+        startDailyClock();
+    }
+});
+window.addEventListener('pagehide', () => {
+    if (currentMode !== 'daily') return;
+    stopDailyClock();
+    saveDailyState();
+});
+
+function loadDailyStats() {
+    const stats = Object.assign(
+        { played: 0, totalCorrect: 0, streak: 0, maxStreak: 0, lastNumber: 0, distribution: [] },
+        loadStoredJSON(DAILY_STATS_KEY) || {}
+    );
+    for (let i = 0; i <= DAILY_QUESTION_COUNT; i++) stats.distribution[i] = stats.distribution[i] || 0;
+    return stats;
+}
+
+// Seri, art arda oynanan günleri sayar; dün de oynanmadıysa sıfırdır
+function getCurrentStreak(stats, today = getDailyNumber()) {
+    return stats.lastNumber >= today - 1 ? stats.streak : 0;
+}
+
+function recordDailyResult(state) {
+    const stats = loadDailyStats();
+    if (stats.lastNumber >= state.number) return stats; // Aynı bulmaca iki kez sayılmaz
+    const correct = state.answers.filter(a => a.correct).length;
+    stats.played++;
+    stats.totalCorrect += correct;
+    stats.distribution[correct]++;
+    stats.streak = stats.lastNumber === state.number - 1 ? stats.streak + 1 : 1;
+    stats.maxStreak = Math.max(stats.maxStreak, stats.streak);
+    stats.lastNumber = state.number;
+    safeSetItem(DAILY_STATS_KEY, JSON.stringify(stats));
+    return stats;
+}
+
+function dailySquare(answer) {
+    if (!answer) return '⬜';
+    if (!answer.correct) return '🟥';
+    return answer.hint ? '🟨' : '🟩';
+}
+
+function formatDuration(ms) {
+    const total = Math.max(0, Math.round(ms / 1000));
+    const h = Math.floor(total / 3600);
+    const m = Math.floor((total % 3600) / 60);
+    const sec = String(total % 60).padStart(2, '0');
+    return h > 0 ? `${h}:${String(m).padStart(2, '0')}:${sec}` : `${m}:${sec}`;
+}
+
+function getDailyShareUrl() {
+    const canonical = document.querySelector('link[rel="canonical"]');
+    const base = canonical ? canonical.href : `${location.origin}${location.pathname}`;
+    return `${base.split('?')[0]}?mod=gunluk`;
+}
+
+function buildDailyShareText(state = dailyState) {
+    const squares = state.answers.map(dailySquare);
+    const correct = state.answers.filter(a => a.correct).length;
+    const streak = getCurrentStreak(loadDailyStats(), state.number);
+    return [
+        `İlçe Bilmece #${state.number} · ${correct}/${DAILY_QUESTION_COUNT}`,
+        squares.slice(0, 5).join(''),
+        squares.slice(5).join(''),
+        `⏱ ${formatDuration(state.elapsedMs)} · 🔥 ${streak} günlük seri`,
+        getDailyShareUrl()
+    ].join('\n');
+}
+
+// Panoya kopyalama: Clipboard API yalnızca HTTPS/localhost'ta çalışır; file:// için eski yöntem
+function copyTextFallback(text) {
+    const area = document.createElement('textarea');
+    area.value = text;
+    area.setAttribute('readonly', '');
+    area.style.position = 'fixed';
+    area.style.opacity = '0';
+    document.body.appendChild(area);
+    area.select();
+    let ok = false;
+    try {
+        ok = document.execCommand('copy');
+    } catch (e) {
+        ok = false;
+    }
+    area.remove();
+    return ok;
+}
+
+function copyDailyResult(text) {
+    const done = (ok) => showToast(ok ? 'Sonuç panoya kopyalandı' : 'Kopyalanamadı');
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(() => done(true)).catch(() => done(copyTextFallback(text)));
+    } else {
+        done(copyTextFallback(text));
+    }
+}
+
+// Mobilde telefonun paylaşım menüsü, bilgisayarda panoya kopyalama
+function shareDailyResult() {
+    if (!dailyState || !dailyState.finished) return;
+    const text = buildDailyShareText();
+    const isTouch = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+    if (navigator.share && isTouch) {
+        navigator.share({ text }).catch((err) => {
+            if (!err || err.name !== 'AbortError') copyDailyResult(text);
+        });
+    } else {
+        copyDailyResult(text);
+    }
+}
+
+let toastTimer = null;
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.add('is-visible');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('is-visible'), 2200);
+}
+
+// Kenar çubuğundaki 10 kare (cevaplandıkça renklenir)
+function renderDailySquares() {
+    const el = document.getElementById('daily-squares');
+    if (!el || !dailyState) {
+        if (el) el.innerHTML = '';
+        return;
+    }
+    let html = '';
+    for (let i = 0; i < DAILY_QUESTION_COUNT; i++) {
+        const a = dailyState.answers[i];
+        const cls = !a ? (i === dailyState.answers.length && isGameStarted ? 'is-current' : '') : !a.correct ? 'is-wrong' : a.hint ? 'is-hint' : 'is-correct';
+        html += `<span class="daily-sq ${cls}"></span>`;
+    }
+    el.innerHTML = html;
+    const correct = dailyState.answers.filter(a => a.correct).length;
+    el.setAttribute('aria-label', `${dailyState.answers.length} soru cevaplandı, ${correct} doğru`);
+}
+
+// Başlangıç ekranı ve kenar çubuğu Günün Bilmecesi için hazırlanır
+function prepareDailyScreen() {
+    dailyNumber = getDailyNumber();
+    dailyPuzzle = buildDailyPuzzle(dailyNumber);
+    dailyState = loadDailyState(dailyNumber);
+
+    const answers = dailyState ? dailyState.answers : [];
+    lives = 3; // Günlük modda can kullanılmaz; önceki oyundan 0 kalmışsa akışı bozmasın
+    correctCount = answers.filter(a => a.correct).length;
+    wrongCount = answers.length - correctCount;
+    score = correctCount;
+    questionCounter = answers.length;
+    mistakesHistory = answers.filter(a => !a.correct).map(a => ({ ilce: a.ilce, correct: a.il, guessed: a.guessed }));
+    jokers = dailyState && dailyState.jokers ? { ...dailyState.jokers } : { ...DAILY_JOKERS };
+    updateJokerButtons();
+
+    document.getElementById('extra-stat-label').innerText = 'Sonuç';
+    document.getElementById('extra-stat-val').innerHTML = '<span class="daily-squares" id="daily-squares" role="img"></span>';
+    renderDailySquares();
+
+    const modeName = `Günün Bilmecesi #${dailyNumber}`;
+    document.getElementById('mode-active-name').innerText = modeName;
+    document.getElementById('mode-active-icon').innerHTML = SVG_ICONS.calendar;
+    const mobileModeIconEl = document.getElementById('mobile-mode-icon');
+    if (mobileModeIconEl) mobileModeIconEl.innerHTML = SVG_ICONS.calendar;
+
+    const dateText = formatDailyDate(dailyNumber);
+    document.getElementById('start-mode-title').innerText = modeName;
+    const startDescEl = document.getElementById('start-mode-desc');
+    let buttonText = 'Oyuna Başla';
+    if (dailyState && dailyState.finished) {
+        startDescEl.innerText = `${dateText}\nBugünün bulmacasını tamamladın: ${correctCount}/${DAILY_QUESTION_COUNT} · ⏱ ${formatDuration(dailyState.elapsedMs)}\nYeni bulmaca her gün 00.00'da açılır.`;
+        buttonText = 'Sonuçları Gör';
+    } else if (answers.length > 0) {
+        startDescEl.innerText = `${dateText}\nBugünün bulmacasını yarım bıraktın. Kaldığın yerden devam et!`;
+        buttonText = `Devam Et (${answers.length}/${DAILY_QUESTION_COUNT})`;
+    } else {
+        startDescEl.innerText = `${dateText} · Herkese aynı ${DAILY_QUESTION_COUNT} soru!\nCan yok, tüm soruları cevapla. İpucu jokerini 3 kez kullanabilirsin; ipucuyla bilinen sorular sarı sayılır.`;
+    }
+    document.querySelector('#start-game-btn span').innerText = buttonText;
+}
+
+function startDailyGame() {
+    if (dailyState && dailyState.finished) {
+        openDailyResults();
+        return;
+    }
+    if (!dailyState) dailyState = createDailyState(dailyNumber);
+
+    // Yarım kalan sorunun ipuçları showQuestion() temizlemeden önce alınır
+    const resumeClue = dailyState.clueHtml;
+    const resumeClueTypes = dailyState.usedClueTypes || [];
+    const resumeHint = dailyState.currentHint;
+
+    isGameStarted = true;
+    setJokersEnabled(true);
+    questionPool = dailyPuzzle.slice(dailyState.answers.length).reverse(); // pop() sıradakini verir
+    questionCounter = dailyState.answers.length;
+
+    document.getElementById('start-screen').style.display = 'none';
+    document.getElementById('quiz-screen').style.display = 'block';
+    document.getElementById('feedback-area').style.display = '';
+
+    showQuestion();
+
+    if (resumeClue && resumeClue.trim()) {
+        const clueBox = document.getElementById('clue-box');
+        clueBox.innerHTML = resumeClue;
+        clueBox.style.display = 'block';
+        usedClueTypesForQuestion = resumeClueTypes;
+        dailyState.currentHint = resumeHint;
+        saveDailyState();
+    }
+}
+
+function finishDaily() {
+    stopDailyClock();
+    isGameStarted = false;
+    isWaiting = true;
+    dailyState.finished = true;
+    dailyState.finishedAt = Date.now();
+    saveDailyState();
+    recordDailyResult(dailyState);
+
+    const correct = dailyState.answers.filter(a => a.correct).length;
+    prepareGame('daily');
+    openDailyResults();
+    if (correct === DAILY_QUESTION_COUNT) {
+        triggerConfetti();
+        playFanfare();
+    }
+}
+
+function openDailyResults() {
+    if (!dailyState) return;
+    const stats = loadDailyStats();
+    const answers = dailyState.answers;
+    const correct = answers.filter(a => a.correct).length;
+
+    document.getElementById('daily-modal-title').innerText = `Günün Bilmecesi #${dailyState.number}`;
+    document.getElementById('daily-modal-date').innerText = formatDailyDate(dailyState.number);
+    document.getElementById('daily-score').innerText = `${correct}/${DAILY_QUESTION_COUNT}`;
+    document.getElementById('daily-time').innerText = `⏱ ${formatDuration(dailyState.elapsedMs)}`;
+
+    const squaresEl = document.getElementById('daily-result-squares');
+    squaresEl.innerHTML = answers.map(a =>
+        `<span class="daily-result-sq ${!a.correct ? 'is-wrong' : a.hint ? 'is-hint' : 'is-correct'}" title="${a.ilce} → ${a.il}"></span>`
+    ).join('');
+    squaresEl.setAttribute('aria-label', `${correct} doğru, ${answers.filter(a => a.correct && a.hint).length} tanesi ipucuyla, ${answers.length - correct} yanlış`);
+
+    document.getElementById('daily-stat-played').innerText = stats.played;
+    document.getElementById('daily-stat-accuracy').innerText = stats.played
+        ? `%${Math.round((stats.totalCorrect / (stats.played * DAILY_QUESTION_COUNT)) * 100)}` : '-';
+    document.getElementById('daily-stat-streak').innerText = getCurrentStreak(stats, dailyState.number);
+    document.getElementById('daily-stat-max').innerText = stats.maxStreak;
+
+    // Skor dağılımı: 0-10 arası sütunlar; bugünkü skor vurgulanır
+    const maxCount = Math.max(1, ...stats.distribution);
+    let distHtml = '';
+    for (let i = 0; i <= DAILY_QUESTION_COUNT; i++) {
+        const count = stats.distribution[i] || 0;
+        const pct = count ? Math.max(8, (count / maxCount) * 100) : 0;
+        distHtml += `<div class="daily-dist-col${i === correct ? ' is-today' : ''}" title="${i} doğru: ${count} gün">
+            <span class="daily-dist-count">${count || ''}</span>
+            <span class="daily-dist-bar" style="height: ${pct}%"></span>
+            <span class="daily-dist-label">${i}</span>
+        </div>`;
+    }
+    document.getElementById('daily-distribution').innerHTML = distHtml;
+
+    const wrongs = answers.filter(a => !a.correct);
+    document.getElementById('daily-mistakes').innerHTML = wrongs.length
+        ? wrongs.map(a => `<div class="review-item"><span class="review-district">${a.ilce}</span><div class="review-answers"><span class="review-wrong">${a.guessed}</span> ➔ <span class="review-correct">${a.il}</span></div></div>`).join('')
+        : '<div style="color: var(--success); text-align: center; padding: 10px;">Hiç yanlış yok, tebrikler!</div>';
+
+    const updateCountdown = () => {
+        const modal = document.getElementById('daily-modal');
+        if (modal.style.display !== 'flex') {
+            clearInterval(dailyCountdownTimer);
+            dailyCountdownTimer = null;
+            return;
+        }
+        const ms = msUntilNextDaily();
+        const h = Math.floor(ms / 3600000);
+        const m = Math.floor((ms % 3600000) / 60000);
+        const sec = Math.floor((ms % 60000) / 1000);
+        document.getElementById('daily-countdown').innerText =
+            [h, m, sec].map(v => String(v).padStart(2, '0')).join(':');
+    };
+    openModal('daily-modal');
+    clearInterval(dailyCountdownTimer);
+    updateCountdown();
+    dailyCountdownTimer = setInterval(updateCountdown, 1000);
+}
+
+document.getElementById('daily-share-btn').onclick = shareDailyResult;
+document.getElementById('daily-close-btn').onclick = () => closeModal('daily-modal');
+
 /* ================= 7. SORU GÖSTERME (CLS-FREE) ================= */
 function showQuestion() {
+    if (currentMode === 'daily' && questionPool.length === 0) {
+        finishDaily();
+        return;
+    }
     if (questionPool.length === 0 || (currentMode !== 'time' && lives <= 0)) {
         endGame(lives <= 0 ? 'Canların Tükendi!' : 'Tüm Soruları Tamamladın!');
         return;
@@ -640,8 +1151,14 @@ function showQuestion() {
     // Soru metni
     document.getElementById('question').innerHTML = `<span class="district-name">${currentQuestion.ilce}</span> ilçesi hangi ile bağlıdır?`;
 
-    // Seçenekleri hazırla (1 Doğru, 3 Yanlış) - ortak üretici fonksiyon kullanılır
-    renderOptions(generateOptions(currentQuestion));
+    // Seçenekleri hazırla (1 Doğru, 3 Yanlış) - Günün Bilmecesi'nde şıklar bulmacayla birlikte hazırdır
+    renderOptions(currentQuestion.options || generateOptions(currentQuestion));
+
+    if (currentMode === 'daily') {
+        dailyState.currentHint = false;
+        renderDailySquares();
+        startDailyClock();
+    }
 
     saveGameSession();
 }
@@ -651,6 +1168,7 @@ function checkAnswer(selectedCity, correctCity, ilce, clickedBtn) {
     if (isWaiting || isAnswered) return;
     isWaiting = true;
     isAnswered = true;
+    if (currentMode === 'daily') stopDailyClock();
 
     const allButtons = document.querySelectorAll('.option-btn');
     allButtons.forEach(b => b.disabled = true);
@@ -663,16 +1181,20 @@ function checkAnswer(selectedCity, correctCity, ilce, clickedBtn) {
         correctCount++;
         score += 1; // 1'ER 1'ER ARTIŞ (KULLANICI İSTEĞİ)
         // Rekor yoksa ilk hedef (10) aşıldığında, varsa önceki rekor aşıldığında kutlanır
-        const isNewRecord = score > (gameStartRecord > 0 ? gameStartRecord : FIRST_RECORD_TARGET);
-        if (score > record) {
-            record = score;
-            safeSetItem(getRecordKey(), record);
-        }
-        const isFirstRecordCelebration = isNewRecord && !recordCelebrated;
-        if (isFirstRecordCelebration) {
-            recordCelebrated = true;
-            triggerConfetti();
-            playFanfare();
+        // (Günün Bilmecesi'nde rekor yerine seri ve skor dağılımı tutulur)
+        let isFirstRecordCelebration = false;
+        if (currentMode !== 'daily') {
+            const isNewRecord = score > (gameStartRecord > 0 ? gameStartRecord : FIRST_RECORD_TARGET);
+            if (score > record) {
+                record = score;
+                safeSetItem(getRecordKey(), record);
+            }
+            isFirstRecordCelebration = isNewRecord && !recordCelebrated;
+            if (isFirstRecordCelebration) {
+                recordCelebrated = true;
+                triggerConfetti();
+                playFanfare();
+            }
         }
         clickedBtn.classList.add('correct');
         resultMessage.innerHTML = `${SVG_ICONS.checkCircle} <span style="color: var(--success);">Tebrikler! Doğru Cevap.</span>`;
@@ -704,8 +1226,8 @@ function checkAnswer(selectedCity, correctCity, ilce, clickedBtn) {
             guessed: selectedCity
         });
 
-        // Can azaltma (Klasik & Bölgesel Mod)
-        if (currentMode !== 'time') {
+        // Can azaltma (Klasik & Bölgesel Mod; Günün Bilmecesi'nde can yok)
+        if (currentMode !== 'time' && currentMode !== 'daily') {
             lives--;
             updateHearts();
         }
@@ -716,6 +1238,12 @@ function checkAnswer(selectedCity, correctCity, ilce, clickedBtn) {
         } else {
             districtInfoDiv.style.display = 'none';
         }
+    }
+
+    if (currentMode === 'daily') {
+        dailyState.answers.push({ ilce, il: correctCity, guessed: selectedCity, correct: isCorrect, hint: !!dailyState.currentHint });
+        dailyState.currentHint = false;
+        renderDailySquares();
     }
 
     updateScoreBoard();
@@ -734,7 +1262,19 @@ function checkAnswer(selectedCity, correctCity, ilce, clickedBtn) {
     } else {
         // Klasik ve Bölgesel modda: Sonraki soru butonu yanıt şıklarının HEMEN ALTINDA görünür!
         const nextBtn = document.getElementById('next-btn');
-        if (lives > 0) {
+        if (currentMode === 'daily' && questionPool.length === 0) {
+            // Son soru: buton sonuç ekranını açar
+            if (nextBtn) {
+                nextBtn.innerHTML = `<span>Sonuçları Gör</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                        <polyline points="12 5 19 12 12 19" />
+                    </svg>`;
+                nextBtn.classList.remove('game-over-btn');
+            }
+            document.getElementById('next-btn-container').style.display = 'block';
+        } else if (lives > 0) {
             if (nextBtn) {
                 nextBtn.innerHTML = `<span>Sonraki Soru</span>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
@@ -812,6 +1352,7 @@ document.getElementById('joker-hint').onclick = function () {
     if (isWaiting || jokers.hint <= 0 || !currentQuestion || !isGameStarted) return;
     jokers.hint--;
     updateJokerButtons();
+    if (currentMode === 'daily' && dailyState) dailyState.currentHint = true; // Paylaşımda 🟨
 
     const meta = ilEkstraBilgiler[currentQuestion.il];
     const clueBox = document.getElementById('clue-box');
@@ -993,7 +1534,10 @@ function renderJokerDots(id, remaining, max) {
 /* ================= 10. UI GÜNCELLEMELERİ ================= */
 function updateScoreBoard() {
     document.getElementById('score').innerText = score;
-    document.getElementById('record').innerText = record;
+    // Günün Bilmecesi'nde "Rekor" yerine günlük seri gösterilir
+    const isDaily = currentMode === 'daily';
+    document.getElementById('record-label').innerText = isDaily ? 'Seri' : 'Rekor';
+    document.getElementById('record').innerText = isDaily ? getCurrentStreak(loadDailyStats(), dailyNumber || getDailyNumber()) : record;
     document.getElementById('progress-text').innerText = `${questionCounter}/${totalAvailableQuestions()}`;
 
     updateRecordProgressBar();
@@ -1078,6 +1622,7 @@ function updateRecordProgressBar() {
 }
 
 function totalAvailableQuestions() {
+    if (currentMode === 'daily') return DAILY_QUESTION_COUNT;
     if (currentMode === 'regional' && selectedRegion !== 'all') {
         return ilceler.reduce((acc, il) => {
             const meta = ilEkstraBilgiler[il.il];
@@ -1169,8 +1714,10 @@ function openModal(id) {
     const modal = document.getElementById(id);
     if (!getOpenModal()) lastFocusedBeforeModal = document.activeElement;
     modal.style.display = 'flex';
+    modal.scrollTop = 0;
+    // Odak, uzun pencerelerde alttaki butona kaydırıp üst içeriği gizlemesin
     const firstFocusable = modal.querySelector(FOCUSABLE_SELECTOR);
-    if (firstFocusable) firstFocusable.focus();
+    if (firstFocusable) firstFocusable.focus({ preventScroll: true });
 }
 
 function closeModal(id) {
@@ -1262,6 +1809,7 @@ window.addEventListener('keydown', (e) => {
         closeModal('mode-modal');
         closeModal('region-modal');
         closeModal('shortcuts-modal');
+        closeModal('daily-modal');
         closeMobileDrawer();
     }
 });
@@ -1272,7 +1820,7 @@ window.addEventListener('keydown', (e) => {
 // M: Oyun modu seçim modalını açar (veya açıksa kapatır)
 // ?: Klavye kısayolları penceresini açar (veya açıksa kapatır)
 // Tab: Standart odak gezintisi (açık modal içinde odak döngüsü)
-// 1-3 tuşları (Mod modalında): Oyun modunu seçer
+// 1-4 tuşları (Mod modalında): Oyun modunu seçer
 // 1-8 tuşları (Bölge modalında): Coğrafi bölgeyi seçer
 window.addEventListener('keydown', (e) => {
     const modeModal = document.getElementById('mode-modal');
@@ -1291,6 +1839,9 @@ window.addEventListener('keydown', (e) => {
 
     // Tarayıcı / sistem kısayollarına (Ctrl+W, Cmd+Q vb.) karışma
     if (e.ctrlKey || e.metaKey || e.altKey) return;
+
+    // Günün Bilmecesi sonuç penceresi: butonlar kendi tuşlarıyla çalışır (Esc ayrıca kapatır)
+    if (openModalEl && openModalEl.id === 'daily-modal') return;
 
     // 0) Kısayollar penceresi: ? ile açılır / kapanır, açıkken diğer kısayollar çalışmaz
     if (shortcutsModal && shortcutsModal.style.display === 'flex') {
@@ -1315,9 +1866,9 @@ window.addEventListener('keydown', (e) => {
         return;
     }
 
-    // 2) Oyun Modu Seçimi Modalında 1, 2, 3 tuşları ile mod seçimi
+    // 2) Oyun Modu Seçimi Modalında 1-4 tuşları ile mod seçimi
     if (modeModal && modeModal.style.display === 'flex') {
-        if (['1', '2', '3'].includes(e.key)) {
+        if (['1', '2', '3', '4'].includes(e.key)) {
             e.preventDefault();
             const activeCards = document.querySelectorAll('.mode-card:not(.disabled)');
             const idx = parseInt(e.key, 10) - 1;
@@ -1804,7 +2355,9 @@ if ('serviceWorker' in navigator) {
 }
 
 function initApp() {
-    prepareGame('classic');
+    // Paylaşılan bağlantı (?mod=gunluk) doğrudan Günün Bilmecesi'ni açar
+    const params = new URLSearchParams(window.location.search);
+    prepareGame(params.get('mod') === 'gunluk' ? 'daily' : 'classic');
 }
 
 if (document.readyState === 'loading') {

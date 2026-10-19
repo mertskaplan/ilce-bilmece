@@ -40,6 +40,9 @@
     <link rel="apple-touch-icon" href="logo/logo-192x192.png">
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="stylesheet" href="styles.css">
+
+    <!-- Ziyaret sayacı: sayac.js yalnızca sunucuda bulunur, depoya eklenmez (.gitignore) -->
+    <script src="sayac.js" async></script>
 </head>
 
 <body>
@@ -167,7 +170,7 @@
                 <span class="stat-value" id="score">0</span>
             </div>
             <div class="stat-item">
-                <span class="stat-label">Rekor</span>
+                <span class="stat-label" id="record-label">Rekor</span>
                 <span class="stat-value" id="record">0</span>
             </div>
             <div class="stat-item">
@@ -380,9 +383,9 @@
                     <div class="mode-card-desc">Marmara, Ege, Karadeniz... İstediğin bölgenin ilçelerini çalış.</div>
                 </div>
 
-                <div class="mode-card disabled" title="Daha sonra gelecek bir özellik" aria-disabled="true">
+                <div class="mode-card" data-mode="daily" role="button" tabindex="0" aria-label="Günün Bilmecesi: Her gün herkes için aynı 10 soru">
                     <div class="mode-card-header">
-                        <div class="mode-card-icon" style="opacity: 0.6;">
+                        <div class="mode-card-icon">
                             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
@@ -391,10 +394,10 @@
                                 <line x1="3" y1="10" x2="21" y2="10" />
                             </svg>
                         </div>
-                        <span class="mode-badge">Kilitli</span>
+                        <span class="mode-badge">Günlük</span>
                     </div>
-                    <div class="mode-card-title">Günün Bilmecesi</div>
-                    <div class="mode-card-desc">Çok yakında! Her gün herkes için aynı 10 soru.</div>
+                    <div class="mode-card-title"><span class="key-badge kbd kbd-hint" aria-hidden="true">4</span> Günün Bilmecesi</div>
+                    <div class="mode-card-desc">Her gün herkes için aynı 10 soru. Sonucunu arkadaşlarınla paylaş!</div>
                 </div>
             </div>
             <button class="primary-action-btn" style="padding: 10px 24px; width: auto; font-size: 0.9rem;"
@@ -438,6 +441,65 @@
             </dl>
             <button class="primary-action-btn" style="padding: 10px 24px; width: auto; font-size: 0.9rem;"
                 onclick="closeModal('shortcuts-modal')">Kapat</button>
+        </div>
+
+        <!-- Günün Bilmecesi Sonuç Modalı -->
+        <div class="modal-overlay" id="daily-modal" role="dialog" aria-modal="true" aria-labelledby="daily-modal-title">
+            <h2 class="modal-title" id="daily-modal-title">Günün Bilmecesi</h2>
+            <p class="modal-desc" id="daily-modal-date"></p>
+
+            <div class="daily-result">
+                <div class="daily-score" id="daily-score">0/10</div>
+                <div class="daily-result-squares" id="daily-result-squares" role="img"></div>
+                <div class="daily-time" id="daily-time"></div>
+            </div>
+
+            <p class="daily-next">Sonraki bulmaca: <strong id="daily-countdown">--:--:--</strong></p>
+
+            <div class="daily-actions">
+                <button class="primary-action-btn" id="daily-share-btn" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="18" cy="5" r="3" />
+                        <circle cx="6" cy="12" r="3" />
+                        <circle cx="18" cy="19" r="3" />
+                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                    </svg>
+                    <span>Paylaş</span>
+                </button>
+                <button class="primary-action-btn secondary-action-btn" id="daily-close-btn" type="button">Kapat</button>
+            </div>
+
+            <div class="stats-bar daily-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Oynanan</span>
+                    <span class="stat-value" id="daily-stat-played">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Başarı</span>
+                    <span class="stat-value" id="daily-stat-accuracy">-</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Seri</span>
+                    <span class="stat-value" id="daily-stat-streak">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">En Uzun Seri</span>
+                    <span class="stat-value" id="daily-stat-max">0</span>
+                </div>
+            </div>
+
+            <div class="daily-section">
+                <strong class="daily-section-title">Skor Dağılımı</strong>
+                <div class="daily-distribution" id="daily-distribution"></div>
+            </div>
+
+            <div class="daily-section">
+                <strong class="daily-section-title">Yanlış Cevaplanan İlçeler</strong>
+                <div class="review-box daily-review" id="daily-mistakes"></div>
+            </div>
+
         </div>
 
         <!-- Game Over Modal -->
@@ -495,6 +557,9 @@
         </section>
     </aside>
     </div>
+
+    <!-- Kısa bildirimler (ör. "Sonuç panoya kopyalandı") -->
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
     <script src="datasets.js"></script>
     <script src="scripts.js"></script>

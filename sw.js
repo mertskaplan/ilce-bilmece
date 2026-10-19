@@ -1,5 +1,5 @@
 /* İlçe Bilmece - Saf Önbellek Odaklı Service Worker */
-const CACHE_NAME = 'ilce-bilmece-v2.1.2'; // Sürüm değiştiğinde tüm önbellek sunucudan sıfırlanır
+const CACHE_NAME = 'ilce-bilmece-v2.5.4'; // Sürüm değiştiğinde tüm önbellek sunucudan sıfırlanır
 
 const ASSETS = [
     './',
