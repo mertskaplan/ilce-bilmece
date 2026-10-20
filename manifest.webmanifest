@@ -5,13 +5,13 @@
   "description": "Türkiye'deki ilçelerin hangi ile bağlı olduğuna dair bilgi yarışması oyunu.",
   "lang": "tr",
   "dir": "ltr",
-  "start_url": "./index.html?utm_source=pwa",
+  "start_url": "./?utm_source=pwa",
   "scope": "./",
   "display": "standalone",
   "display_override": ["standalone", "minimal-ui"],
   "orientation": "portrait",
-  "background_color": "#0b1120",
-  "theme_color": "#6366f1",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
   "categories": [
     "game",
     "education"
@@ -81,7 +81,7 @@
       "src": "logo/logo-maskable-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "maskable any"
+      "purpose": "maskable"
     },
     {
       "src": "logo/logo-monochrome-192x192.png",

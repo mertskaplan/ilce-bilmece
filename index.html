@@ -9,9 +9,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>İlçe Bilmece Oyunu</title>
     <meta name="robots" content="index, follow">
-    <meta name="theme-color" content="#f1f5f9">
-    <meta name="theme-color" content="#f1f5f9" media="(prefers-color-scheme: light)">
-    <meta name="theme-color" content="#0b1120" media="(prefers-color-scheme: dark)">
+    <!-- Durum çubuğu rengi: oyunun seçili temasına göre scripts.js tarafından güncellenir -->
+    <meta name="theme-color" content="#ffffff">
     <!-- TODO: Yayınladığınız gerçek alan adıyla aşağıdaki iki URL'yi güncelleyin -->
     <link rel="canonical" href="https://lab.mertskaplan.com/ilce-bilmece/">
 
@@ -400,7 +399,7 @@
                     <div class="mode-card-desc">Her gün herkes için aynı 10 soru. Sonucunu arkadaşlarınla paylaş!</div>
                 </div>
             </div>
-            <button class="primary-action-btn" style="padding: 10px 24px; width: auto; font-size: 0.9rem;"
+            <button class="primary-action-btn modal-close-btn" type="button"
                 onclick="closeModal('mode-modal')">Kapat</button>
         </div>
 
@@ -419,7 +418,7 @@
                 <button class="region-btn" data-region="all" style="border-color: var(--primary);"><span class="key-badge kbd kbd-hint" aria-hidden="true">8</span> Tüm Bölgeler
                     (Karışık)</button>
             </div>
-            <button class="primary-action-btn" style="padding: 10px 24px; width: auto; font-size: 0.9rem;"
+            <button class="primary-action-btn modal-close-btn" type="button"
                 onclick="closeModal('region-modal')">Geri Dön</button>
         </div>
 
@@ -439,7 +438,7 @@
                 <div class="shortcut-row"><dt><kbd class="kbd">Esc</kbd></dt><dd>Açık pencereyi kapat</dd></div>
                 <div class="shortcut-row"><dt><kbd class="kbd">?</kbd></dt><dd>Bu pencereyi aç / kapat</dd></div>
             </dl>
-            <button class="primary-action-btn" style="padding: 10px 24px; width: auto; font-size: 0.9rem;"
+            <button class="primary-action-btn modal-close-btn" type="button"
                 onclick="closeModal('shortcuts-modal')">Kapat</button>
         </div>
 
@@ -448,16 +447,24 @@
             <h2 class="modal-title" id="daily-modal-title">Günün Bilmecesi</h2>
             <p class="modal-desc" id="daily-modal-date"></p>
 
-            <div class="daily-result">
-                <div class="daily-score" id="daily-score">0/10</div>
-                <div class="daily-result-squares" id="daily-result-squares" role="img"></div>
-                <div class="daily-time" id="daily-time"></div>
+            <!-- Paylaşılacak sonuç görselinin önizlemesi (skor, kareler, süre ve seri görselde) -->
+            <div class="daily-preview">
+                <img id="daily-preview-img" alt="" width="1080" height="1080" hidden>
             </div>
 
             <p class="daily-next">Sonraki bulmaca: <strong id="daily-countdown">--:--:--</strong></p>
 
             <div class="daily-actions">
-                <button class="primary-action-btn" id="daily-share-btn" type="button">
+                <button class="primary-action-btn" id="daily-image-btn" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                        <circle cx="8.5" cy="8.5" r="1.5" />
+                        <polyline points="21 15 16 10 5 21" />
+                    </svg>
+                    <span id="daily-image-label">Görseli Paylaş</span>
+                </button>
+                <button class="primary-action-btn secondary-action-btn" id="daily-share-btn" type="button">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
                         stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="18" cy="5" r="3" />
@@ -466,7 +473,7 @@
                         <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
                         <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
                     </svg>
-                    <span>Paylaş</span>
+                    <span id="daily-text-label">Metni Kopyala</span>
                 </button>
                 <button class="primary-action-btn secondary-action-btn" id="daily-close-btn" type="button">Kapat</button>
             </div>
@@ -548,14 +555,30 @@
             <div class="map-svg province-map" id="province-map" role="img" aria-label="Türkiye illeri haritası"></div>
             <div class="map-legend" id="province-map-legend"></div>
         </section>
-        <section class="map-card">
+        <!-- İlçe haritası: yalnızca cevaptan sonra harita çizildiğinde görünür -->
+        <section class="map-card" id="district-map-card" hidden>
             <div class="map-card-title" id="district-map-title">İl Haritası</div>
-            <div class="map-svg district-map" id="district-map" role="img" aria-label="İlçe haritası">
-                <p class="map-placeholder">Yanıt verince doğru ilin haritası burada görünecek.</p>
-            </div>
+            <div class="map-svg district-map" id="district-map" role="img" aria-label="İlçe haritası"></div>
             <div class="map-legend" id="district-map-legend"></div>
         </section>
     </aside>
+    </div>
+
+    <!-- Uygulama yükleme önerisi (yalnızca mobilde, uygulama yüklü değilken; bkz. scripts.js) -->
+    <div class="install-banner" id="install-banner" role="region" aria-label="Uygulama yükleme önerisi" hidden>
+        <img class="install-banner-icon" src="logo/logo-96x96.png" alt="" width="44" height="44">
+        <div class="install-banner-text">
+            <strong>Uygulama olarak yükle</strong>
+            <span id="install-banner-desc"></span>
+        </div>
+        <button class="primary-action-btn install-banner-btn" id="install-banner-btn" type="button">Yükle</button>
+        <button class="install-banner-close" id="install-banner-close" type="button" aria-label="Şimdi değil" title="Şimdi değil">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
     </div>
 
     <!-- Kısa bildirimler (ör. "Sonuç panoya kopyalandı") -->

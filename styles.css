@@ -23,6 +23,10 @@
     --kbd-bg: rgba(255, 255, 255, 0.07);
     --kbd-border: rgba(255, 255, 255, 0.22);
     --container-max: 680px;
+    /* Mobilde kenardan kenara kap rengi (masaüstündeki yarı saydam kartın görünen rengi) */
+    --app-surface: #363b50;
+    /* Tarayıcı ve PWA durum çubuğu rengi (scripts.js <meta name="theme-color"> içine yazar) */
+    --theme-color: #0b1120;
     --map-fill: rgba(148, 163, 184, 0.32);
     --map-fill-muted: rgba(148, 163, 184, 0.18);
     --map-stroke: rgba(15, 23, 42, 0.85);
@@ -41,6 +45,8 @@
     --shadow-glow: 0 10px 30px -10px rgba(99, 102, 241, 0.2);
     --kbd-bg: #ffffff;
     --kbd-border: rgba(15, 23, 42, 0.22);
+    --app-surface: #ffffff;
+    --theme-color: #f1f5f9;
     --map-fill: #cbd5e1;
     --map-fill-muted: #e2e8f0;
     --map-stroke: #ffffff;
@@ -852,16 +858,43 @@ h1 {
 }
 
 @media (max-width: 600px) {
-    body {
-        /* Çentik ve sistem navigasyon çubuğu altında kalan alanlar boşluğa eklenir */
-        padding: calc(8px + env(safe-area-inset-top)) 6px calc(16px + env(safe-area-inset-bottom));
+    /* Mobilde kap ekranın tamamını kaplar: gövde boşluğu, kenar yuvarlatma ve gölge yok.
+       Durum çubuğu da kapla aynı renkte olur (--theme-color) */
+    :root {
+        --theme-color: var(--app-surface);
     }
+
+    body {
+        padding: 0;
+        background: var(--app-surface);
+    }
+
     .container {
-        padding: 14px 10px;
-        min-height: calc(var(--app-height, 100dvh) - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+        /* Çentik ve sistem navigasyon çubuğu altında kalan alanlar iç boşluğa eklenir */
+        padding: calc(14px + env(safe-area-inset-top)) calc(14px + env(safe-area-inset-right))
+            calc(16px + env(safe-area-inset-bottom)) calc(14px + env(safe-area-inset-left));
+        /* Yükleme önerisi açıkken kap onun yüksekliği kadar kısalır; sol barın altı (sayaç) önerinin altında kalmaz */
+        min-height: calc(var(--app-height, 100dvh) - var(--install-banner-space, 0px));
+        background: var(--app-surface);
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
         /* Oyun alanı kalan yüksekliği doldurur (sabit piksel çıkarımı yerine) */
         display: flex;
         flex-direction: column;
+    }
+
+    /* Kap artık ekranın en üstünden başladığı için pencereler ve açılır menü de güvenli alanı bırakır */
+    .modal-overlay {
+        padding-top: calc(24px + env(safe-area-inset-top));
+        padding-bottom: calc(24px + env(safe-area-inset-bottom));
+    }
+
+    .mobile-drawer {
+        padding-top: calc(20px + env(safe-area-inset-top));
+        padding-bottom: calc(20px + env(safe-area-inset-bottom));
     }
 
     .header-bar {
@@ -903,7 +936,8 @@ h1 {
     .game-layout-wrapper {
         display: grid;
         grid-template-columns: 42px 1fr;
-        grid-template-rows: min-content;
+        /* Fazla yükseklik oyun alanı satırına verilir; jokerlerin altında boşluk oluşmaz */
+        grid-template-rows: auto 1fr;
         gap: 8px;
         align-items: start;
         flex: 1 1 auto;
@@ -933,6 +967,8 @@ h1 {
         min-height: auto !important;
         gap: 6px;
         width: 100%;
+        /* Mobil kenar çubuğu kuralı alt boşluğu sıfırlıyor; altındaki başlığa yapışmasın */
+        margin-bottom: 14px;
     }
 
     /* Mobilde dar kenar çubuğunda kareler 2 sütun (genel kuralı ezmesi için daha belirgin seçici) */
@@ -1320,6 +1356,8 @@ h1 {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    /* İçerik pencereden uzunsa üstten başlar (başlık ekranın dışında kalmaz) */
+    justify-content: safe center;
     padding: 24px;
     z-index: 100;
     text-align: center;
@@ -1382,6 +1420,62 @@ h1 {
 @media (max-width: 480px) {
     .mode-grid {
         grid-template-columns: 1fr;
+        gap: 8px;
+        margin-bottom: 14px;
+    }
+
+    /* Mobilde mod penceresi sayfa kaydırmadan sığsın: kartlar yatay düzende
+       (ikon solda, başlık ve açıklama sağda, rozet sağ üst köşede). Temel kart stilleri
+       dosyada bu kuraldan sonra geldiği için seçiciler #mode-modal ile belirginleştirildi */
+    #mode-modal {
+        padding: calc(16px + env(safe-area-inset-top)) 14px calc(16px + env(safe-area-inset-bottom));
+    }
+
+    #mode-modal .modal-title {
+        font-size: 1.4rem;
+        margin-bottom: 4px;
+    }
+
+    #mode-modal .modal-desc {
+        font-size: 0.84rem;
+        margin-bottom: 12px;
+    }
+
+    #mode-modal .mode-card {
+        display: grid;
+        grid-template-columns: 32px 1fr;
+        column-gap: 12px;
+        row-gap: 2px;
+        align-items: start;
+        padding: 10px 12px;
+    }
+
+    #mode-modal .mode-card-header {
+        display: contents;
+    }
+
+    #mode-modal .mode-card-icon {
+        grid-column: 1;
+        grid-row: 1 / span 2;
+        align-self: center;
+    }
+
+    #mode-modal .mode-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+
+    #mode-modal .mode-card-title {
+        grid-column: 2;
+        grid-row: 1;
+        font-size: 0.98rem;
+        padding-right: 72px; /* Rozetin altına girmesin */
+    }
+
+    #mode-modal .mode-card-desc {
+        grid-column: 2;
+        grid-row: 2;
     }
 }
 
@@ -1485,11 +1579,10 @@ h1 {
 }
 
 /* Game Over Review Area */
+/* Yanlış cevaplanan ilçelerin tamamı görünür; liste uzarsa pencerenin kendisi kaydırılır */
 .review-box {
     width: 100%;
     max-width: 480px;
-    max-height: 200px;
-    overflow-y: auto;
     background: var(--panel-bg);
     border: 1px solid var(--card-border);
     border-radius: var(--radius-md);
@@ -1918,18 +2011,15 @@ body[data-mode="daily"] .jokers-grid {
     box-shadow: inset 0 0 0 1.5px var(--primary);
 }
 
-.daily-sq.is-correct,
-.daily-result-sq.is-correct {
+.daily-sq.is-correct {
     background: var(--success);
 }
 
-.daily-sq.is-hint,
-.daily-result-sq.is-hint {
+.daily-sq.is-hint {
     background: var(--accent);
 }
 
-.daily-sq.is-wrong,
-.daily-result-sq.is-wrong {
+.daily-sq.is-wrong {
     background: var(--error);
 }
 
@@ -1938,37 +2028,29 @@ body[data-mode="daily"] .jokers-grid {
     justify-content: flex-start;
 }
 
-.daily-result {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
+/* Paylaşılacak görselin önizlemesi */
+.daily-preview {
+    width: 240px;
+    max-width: 70%;
+    aspect-ratio: 1 / 1;
     margin-bottom: 14px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--card-border);
+    background: var(--panel-bg);
+    box-shadow: 0 10px 30px -12px rgba(15, 23, 42, 0.35);
+    overflow: hidden;
+    flex-shrink: 0;
 }
 
-.daily-score {
-    font-size: 2.2rem;
-    font-weight: 800;
-    line-height: 1;
-    color: var(--text-main);
+.daily-preview img {
+    display: block;
+    width: 100%;
+    height: 100%;
 }
 
-.daily-result-squares {
-    display: grid;
-    grid-template-columns: repeat(5, 22px);
-    gap: 5px;
-}
-
-.daily-result-sq {
-    width: 22px;
-    height: 22px;
-    border-radius: 5px;
-}
-
-.daily-time {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--text-muted);
+.daily-actions .primary-action-btn:disabled {
+    opacity: 0.6;
+    cursor: wait;
 }
 
 #daily-modal .stats-bar {
@@ -2039,7 +2121,6 @@ body[data-mode="daily"] .jokers-grid {
 }
 
 .daily-review {
-    max-height: 130px;
     margin: 0;
 }
 
@@ -2067,11 +2148,110 @@ body[data-mode="daily"] .jokers-grid {
     padding: 12px 24px;
 }
 
+/* Mod, bölge ve kısayol pencerelerinin Kapat / Geri Dön butonu: diğer pencere butonlarıyla aynı boyutta */
+.primary-action-btn.modal-close-btn {
+    width: auto;
+    padding: 12px 32px;
+    min-height: 49px; /* İkonlu pencere butonlarıyla (ör. Görseli Paylaş) aynı yükseklik */
+}
+
 .primary-action-btn.secondary-action-btn {
     background: var(--btn-bg);
     border: 1px solid var(--btn-border);
     color: var(--text-main);
     box-shadow: none;
+}
+
+/* Uygulama yükleme önerisi (mobil, ekranın altında) */
+.install-banner {
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    bottom: calc(12px + env(safe-area-inset-bottom));
+    z-index: 250;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 10px 12px 12px;
+    background: var(--app-surface);
+    color: var(--text-main);
+    border: 1px solid var(--btn-border);
+    border-radius: var(--radius-md);
+    box-shadow: 0 12px 32px -8px rgba(15, 23, 42, 0.45);
+    animation: install-slide-up 0.3s ease-out;
+}
+
+.install-banner[hidden] {
+    display: none;
+}
+
+@keyframes install-slide-up {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.install-banner-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    flex-shrink: 0;
+}
+
+.install-banner-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    flex: 1;
+    font-size: 0.8rem;
+    line-height: 1.35;
+    color: var(--text-muted);
+}
+
+.install-banner-text strong {
+    font-size: 0.92rem;
+    color: var(--text-main);
+}
+
+.install-banner-text svg {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    vertical-align: -2px;
+    color: var(--primary);
+}
+
+.primary-action-btn.install-banner-btn {
+    width: auto;
+    padding: 10px 16px;
+    font-size: 0.92rem;
+    flex-shrink: 0;
+}
+
+.install-banner-btn[hidden] {
+    display: none;
+}
+
+.install-banner-close {
+    align-self: flex-start;
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    border-radius: 50%;
+    color: var(--text-muted);
+    cursor: pointer;
 }
 
 /* Kısa bildirim */
@@ -2125,6 +2305,10 @@ body[data-mode="daily"] .jokers-grid {
 /* Yer yoksa: bilgi notunun altında */
 .map-panel.is-inline {
     width: 100%;
+}
+
+.map-card[hidden] {
+    display: none;
 }
 
 .map-card {

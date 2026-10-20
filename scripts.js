@@ -935,6 +935,243 @@ function shareDailyResult() {
     }
 }
 
+/* ---------- Görsel paylaşım (1080x1080 PNG, kullanıcının seçtiği temada) ---------- */
+// Görsel tarayıcıda Canvas ile çizilir; sunucu ve harici kütüphane gerekmez.
+// Metin paylaşımı gibi görselde de il ve ilçe adı yer almaz (cevaplar ele verilmez).
+const SHARE_IMAGE_SIZE = 1080;
+const SHARE_THEMES = {
+    light: {
+        bg: ['#f1f5f9', '#e0e7ff'], text: '#0f172a', muted: '#64748b', map: 'rgba(99, 102, 241, 0.09)',
+        pill: '#ffffff', pillBorder: 'rgba(99, 102, 241, 0.22)', empty: '#e2e8f0', logo: '#6366f1', link: '#4f46e5'
+    },
+    dark: {
+        bg: ['#0b1120', '#1e1b4b'], text: '#f8fafc', muted: '#94a3b8', map: 'rgba(148, 163, 184, 0.10)',
+        pill: 'rgba(255, 255, 255, 0.06)', pillBorder: 'rgba(255, 255, 255, 0.14)', empty: 'rgba(255, 255, 255, 0.12)', logo: '#818cf8', link: '#a5b4fc'
+    }
+};
+const SHARE_COLORS = { correct: '#10b981', hint: '#f59e0b', wrong: '#ef4444' };
+
+let dailyShareImage = null; // { number, theme, blob, url } - son üretilen görsel
+
+// Skora göre unvan (görselde skorun altında): 10 farklı unvan, 0 ve 1 doğru aynı unvanı paylaşır
+const DAILY_TITLES = {
+    10: 'Harita Ustası!',
+    9: 'Coğrafya Kurdu!',
+    8: 'Pusula Gibi!',
+    7: 'Yol Gösteren!',
+    6: 'Rotayı Bulan!',
+    5: 'Yarı Yolda!',
+    4: 'Keşif Yolunda!',
+    3: 'Acemi Gezgin!',
+    2: 'Haritayı Ters Tutan!',
+    1: 'Yarın Daha İyi!',
+    0: 'Yarın Daha İyi!'
+};
+
+function getDailyTitle(correct) {
+    return DAILY_TITLES[Math.max(0, Math.min(DAILY_QUESTION_COUNT, correct))];
+}
+
+// Sayfadaki SVG yollarından Canvas yolları (logo ve Türkiye silueti)
+function getBrandPaths() {
+    return Array.from(document.querySelectorAll('.brand-icon svg path')).map(p => new Path2D(p.getAttribute('d')));
+}
+
+function getTurkeyPaths() {
+    const svg = (window.ilceBilmeceMaps || {}).iller;
+    if (!svg) return [];
+    return Array.from(svg.matchAll(/ d="([^"]+)"/g)).map(m => new Path2D(m[1]));
+}
+
+function roundRectPath(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+}
+
+function drawDailyShareImage(state, themeName) {
+    const t = SHARE_THEMES[themeName] || SHARE_THEMES.light;
+    const S = SHARE_IMAGE_SIZE;
+    const canvas = document.createElement('canvas');
+    canvas.width = S;
+    canvas.height = S;
+    const ctx = canvas.getContext('2d');
+    const font = getComputedStyle(document.body).fontFamily || 'system-ui, sans-serif';
+    const correct = state.answers.filter(a => a.correct).length;
+    const streak = getCurrentStreak(loadDailyStats(), state.number);
+
+    // Arka plan
+    const bg = ctx.createLinearGradient(0, 0, S, S);
+    bg.addColorStop(0, t.bg[0]);
+    bg.addColorStop(1, t.bg[1]);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, S, S);
+
+    // Silik Türkiye silueti (iller haritası viewBox: 1 0 1436 629)
+    const turkey = getTurkeyPaths();
+    if (turkey.length) {
+        const scale = 1000 / 1436;
+        ctx.save();
+        ctx.translate((S - 1000) / 2 - scale, 300);
+        ctx.scale(scale, scale);
+        ctx.fillStyle = t.map;
+        turkey.forEach(p => ctx.fill(p));
+        ctx.restore();
+    }
+
+    ctx.textBaseline = 'alphabetic';
+    const brandGradient = ctx.createLinearGradient(0, 0, S, 0);
+    brandGradient.addColorStop(0, '#818cf8');
+    brandGradient.addColorStop(1, '#c084fc');
+
+    // Başlık: logo + oyun adı (ortalanmış)
+    ctx.font = `800 60px ${font}`;
+    const brandText = 'İlçe Bilmece';
+    const logoW = 84, logoH = 72, logoGap = 18;
+    const brandW = logoW + logoGap + ctx.measureText(brandText).width;
+    const brandX = (S - brandW) / 2;
+    const logo = getBrandPaths();
+    if (logo.length) {
+        ctx.save();
+        ctx.translate(brandX, 70);
+        ctx.scale(logoW / 42, logoH / 36); // Logo viewBox: 0 0 42 36
+        ctx.fillStyle = t.logo;
+        logo.forEach(p => ctx.fill(p));
+        ctx.restore();
+    }
+    ctx.textAlign = 'left';
+    ctx.fillStyle = brandGradient;
+    ctx.fillText(brandText, brandX + logoW + logoGap, 128);
+
+    ctx.textAlign = 'center';
+    ctx.fillStyle = t.muted;
+    ctx.font = `600 34px ${font}`;
+    ctx.fillText(`Günün Bilmecesi #${state.number} · ${formatDailyDate(state.number)}`, S / 2, 200);
+
+    // Skor ve unvan
+    ctx.fillStyle = t.text;
+    ctx.font = `800 190px ${font}`;
+    ctx.fillText(`${correct}/${DAILY_QUESTION_COUNT}`, S / 2, 420);
+    ctx.fillStyle = brandGradient;
+    ctx.font = `800 56px ${font}`;
+    ctx.fillText(getDailyTitle(correct), S / 2, 500);
+
+    // 2x5 kare: yeşil doğru, sarı ipucuyla doğru, kırmızı yanlış
+    const sq = 92, gap = 18;
+    const gridX = (S - (5 * sq + 4 * gap)) / 2;
+    for (let i = 0; i < DAILY_QUESTION_COUNT; i++) {
+        const a = state.answers[i];
+        ctx.fillStyle = !a ? t.empty : !a.correct ? SHARE_COLORS.wrong : a.hint ? SHARE_COLORS.hint : SHARE_COLORS.correct;
+        roundRectPath(ctx, gridX + (i % 5) * (sq + gap), 550 + Math.floor(i / 5) * (sq + gap), sq, sq, 18);
+        ctx.fill();
+    }
+
+    // Süre ve seri kutuları
+    const pills = [['SÜRE', formatDuration(state.elapsedMs)], ['SERİ', `${streak} gün`]];
+    const pillW = 250, pillH = 96, pillGap = 24;
+    let pillX = (S - (pills.length * pillW + (pills.length - 1) * pillGap)) / 2;
+    pills.forEach(([label, value]) => {
+        ctx.fillStyle = t.pill;
+        roundRectPath(ctx, pillX, 790, pillW, pillH, 22);
+        ctx.fill();
+        ctx.strokeStyle = t.pillBorder;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.fillStyle = t.muted;
+        ctx.font = `700 22px ${font}`;
+        ctx.fillText(label, pillX + pillW / 2, 826);
+        ctx.fillStyle = t.text;
+        ctx.font = `800 38px ${font}`;
+        ctx.fillText(value, pillX + pillW / 2, 869);
+        pillX += pillW + pillGap;
+    });
+
+    // Davet ve adres
+    ctx.fillStyle = t.text;
+    ctx.font = `800 44px ${font}`;
+    ctx.fillText('Sen kaç bilirsin?', S / 2, 960);
+    // Görselde adres sade yazılır (?mod=gunluk metin paylaşımındaki bağlantıda yer alır).
+    // Görsele sığmazsa yazı boyutu küçültülür.
+    ctx.fillStyle = t.link;
+    const shareAddress = getDailyShareUrl().replace(/^https?:\/\//, '').replace(/\/?\?.*$/, '');
+    let addressSize = 32;
+    ctx.font = `600 ${addressSize}px ${font}`;
+    while (ctx.measureText(shareAddress).width > S - 120 && addressSize > 20) {
+        addressSize -= 1;
+        ctx.font = `600 ${addressSize}px ${font}`;
+    }
+    ctx.fillText(shareAddress, S / 2, 1012);
+
+    return new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+}
+
+function getCurrentTheme() {
+    return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+}
+
+// Görsel paylaşımı (dosya olarak) destekleniyor mu? Desteklenmiyorsa görsel indirilir.
+function canShareImageFile() {
+    try {
+        return !!(navigator.canShare && navigator.share &&
+            navigator.canShare({ files: [new File([''], 'test.png', { type: 'image/png' })] }));
+    } catch (e) {
+        return false;
+    }
+}
+
+// Sonuç penceresi açılınca görsel önceden üretilir: paylaşım butonuna basıldığında
+// navigator.share() kullanıcı etkileşimi süresi içinde, beklemeden çağrılabilsin
+function prepareDailyShareImage() {
+    const img = document.getElementById('daily-preview-img');
+    const btn = document.getElementById('daily-image-btn');
+    const state = dailyState;
+    const theme = getCurrentTheme();
+    if (dailyShareImage && dailyShareImage.number === state.number && dailyShareImage.theme === theme &&
+        dailyShareImage.elapsedMs === state.elapsedMs) {
+        img.src = dailyShareImage.url;
+        img.hidden = false;
+        btn.disabled = false;
+        return;
+    }
+    img.hidden = true;
+    btn.disabled = true;
+    const fontsReady = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
+    fontsReady.then(() => drawDailyShareImage(state, theme)).then(blob => {
+        if (!blob) return;
+        if (dailyShareImage) URL.revokeObjectURL(dailyShareImage.url);
+        dailyShareImage = { number: state.number, theme, elapsedMs: state.elapsedMs, blob, url: URL.createObjectURL(blob) };
+        img.src = dailyShareImage.url;
+        img.hidden = false;
+        btn.disabled = false;
+    });
+}
+
+function downloadDailyImage() {
+    const a = document.createElement('a');
+    a.href = dailyShareImage.url;
+    a.download = `ilce-bilmece-${dailyShareImage.number}.png`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    showToast('Görsel indirildi');
+}
+
+function shareDailyImage() {
+    if (!dailyShareImage) return;
+    if (!canShareImageFile()) {
+        downloadDailyImage();
+        return;
+    }
+    const file = new File([dailyShareImage.blob], `ilce-bilmece-${dailyShareImage.number}.png`, { type: 'image/png' });
+    navigator.share({ files: [file], text: buildDailyShareText() }).catch(err => {
+        if (!err || err.name !== 'AbortError') downloadDailyImage();
+    });
+}
+
 let toastTimer = null;
 function showToast(message) {
     const toast = document.getElementById('toast');
@@ -1054,6 +1291,7 @@ function finishDaily() {
         triggerConfetti();
         playFanfare();
     }
+    scheduleInstallPrompt('gameEnd');
 }
 
 function openDailyResults() {
@@ -1064,14 +1302,16 @@ function openDailyResults() {
 
     document.getElementById('daily-modal-title').innerText = `Günün Bilmecesi #${dailyState.number}`;
     document.getElementById('daily-modal-date').innerText = formatDailyDate(dailyState.number);
-    document.getElementById('daily-score').innerText = `${correct}/${DAILY_QUESTION_COUNT}`;
-    document.getElementById('daily-time').innerText = `⏱ ${formatDuration(dailyState.elapsedMs)}`;
 
-    const squaresEl = document.getElementById('daily-result-squares');
-    squaresEl.innerHTML = answers.map(a =>
-        `<span class="daily-result-sq ${!a.correct ? 'is-wrong' : a.hint ? 'is-hint' : 'is-correct'}" title="${a.ilce} → ${a.il}"></span>`
-    ).join('');
-    squaresEl.setAttribute('aria-label', `${correct} doğru, ${answers.filter(a => a.correct && a.hint).length} tanesi ipucuyla, ${answers.length - correct} yanlış`);
+    // Önizleme: paylaşılacak görselin kendisi (skor, kareler, süre ve seri görselde)
+    const hints = answers.filter(a => a.correct && a.hint).length;
+    document.getElementById('daily-preview-img').alt =
+        `Sonuç görseli: ${correct}/${DAILY_QUESTION_COUNT} doğru (${hints} tanesi ipucuyla), süre ${formatDuration(dailyState.elapsedMs)}`;
+    const imageSupported = canShareImageFile();
+    document.getElementById('daily-image-label').innerText = imageSupported ? 'Görseli Paylaş' : 'Görseli İndir';
+    const isTouch = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+    document.getElementById('daily-text-label').innerText = navigator.share && isTouch ? 'Metni Paylaş' : 'Metni Kopyala';
+    prepareDailyShareImage();
 
     document.getElementById('daily-stat-played').innerText = stats.played;
     document.getElementById('daily-stat-accuracy').innerText = stats.played
@@ -1118,6 +1358,7 @@ function openDailyResults() {
     dailyCountdownTimer = setInterval(updateCountdown, 1000);
 }
 
+document.getElementById('daily-image-btn').onclick = shareDailyImage;
 document.getElementById('daily-share-btn').onclick = shareDailyResult;
 document.getElementById('daily-close-btn').onclick = () => closeModal('daily-modal');
 
@@ -1694,6 +1935,7 @@ function endGame(reason = 'Oyun Bitti!') {
     }
 
     openModal('gameover-modal');
+    scheduleInstallPrompt('gameEnd');
 }
 
 document.getElementById('restart-btn').onclick = function () {
@@ -1710,11 +1952,34 @@ function getOpenModal() {
     return Array.from(document.querySelectorAll('.modal-overlay')).find(m => m.style.display === 'flex') || null;
 }
 
+// Pencere içeriği kaptan uzunsa, pencere açık kaldığı sürece kap pencerenin boyuna uzar;
+// böylece pencerenin içinde ayrıca kaydırmak gerekmez (gerekirse sayfa kaydırılır).
+function fitContainerToModal() {
+    const container = document.querySelector('.container');
+    if (!container) return;
+    container.style.minHeight = '';
+    const modal = getOpenModal();
+    if (!modal) return;
+    const needed = modal.scrollHeight;
+    if (needed > modal.clientHeight) {
+        // min-height kenarlıkları da kapsar; pencere ise kenarlığın içinde kalır
+        container.style.minHeight = `${needed + (container.offsetHeight - container.clientHeight)}px`;
+    }
+}
+
+window.addEventListener('resize', () => {
+    if (getOpenModal()) fitContainerToModal();
+});
+
 function openModal(id) {
     const modal = document.getElementById(id);
     if (!getOpenModal()) lastFocusedBeforeModal = document.activeElement;
     modal.style.display = 'flex';
     modal.scrollTop = 0;
+    fitContainerToModal();
+    // Sayfa aşağı kaydırılmışsa pencerenin başı görünür olsun
+    const containerTop = document.querySelector('.container').getBoundingClientRect().top;
+    if (containerTop < 0) window.scrollBy(0, containerTop);
     // Odak, uzun pencerelerde alttaki butona kaydırıp üst içeriği gizlemesin
     const firstFocusable = modal.querySelector(FOCUSABLE_SELECTOR);
     if (firstFocusable) firstFocusable.focus({ preventScroll: true });
@@ -1724,6 +1989,7 @@ function closeModal(id) {
     const modal = document.getElementById(id);
     if (modal.style.display !== 'flex') return;
     modal.style.display = 'none';
+    fitContainerToModal(); // Başka pencere açık değilse kap eski boyuna döner
     // Başka modal açılmadıysa odağı modal öncesindeki öğeye geri ver
     if (!getOpenModal() && lastFocusedBeforeModal && document.contains(lastFocusedBeforeModal)) {
         lastFocusedBeforeModal.focus();
@@ -1976,6 +2242,21 @@ function updateThemeUI(theme) {
     const icon = theme === 'dark' ? SVG_ICONS.moon : SVG_ICONS.sun;
     if (themeBtn) themeBtn.innerHTML = icon;
     if (mobileThemeIcon) mobileThemeIcon.innerHTML = icon;
+    syncThemeColor();
+}
+
+// Tarayıcı ve PWA durum çubuğu rengi, seçili temaya ve ekran genişliğine göre CSS'teki
+// --theme-color değerinden alınır (mobilde kap rengi, masaüstünde sayfa arka planı).
+// Sistem temasına göre değil oyunun kendi temasına göre olmalı; bu yüzden JS ile yazılır.
+function syncThemeColor() {
+    const meta = document.querySelector('meta[name="theme-color"]');
+    const color = getComputedStyle(document.documentElement).getPropertyValue('--theme-color').trim();
+    if (meta && color) meta.setAttribute('content', color);
+}
+
+if (window.matchMedia) {
+    const mobileQuery = window.matchMedia('(max-width: 600px)');
+    if (mobileQuery.addEventListener) mobileQuery.addEventListener('change', syncThemeColor);
 }
 
 const savedTheme = safeGetItem('ilce_theme', 'light');
@@ -2161,7 +2442,6 @@ const mapPanel = document.getElementById('map-panel');
 const provinceMapEl = document.getElementById('province-map');
 const districtMapEl = document.getElementById('district-map');
 const mapScriptRequests = {};
-const DISTRICT_PLACEHOLDER = '<p class="map-placeholder">Yanıt verince doğru ilin ilçe haritası burada görünecek.</p>';
 let mapAnswer = null; // { correct, guessed, ilce } - cevaptan sonra, sonraki soruya kadar dolu
 let isMapSideLayout = false;
 
@@ -2233,13 +2513,16 @@ function applyProvinceHighlight() {
     provinceMapEl.setAttribute('aria-label', label);
 }
 
+// İlçe haritası kartı yalnızca harita çizildiğinde görünür; cevaptan önce, yüklenirken
+// ve yüklenemediğinde (ör. çevrimdışı) gizli kalır
 function renderDistrictMap() {
+    const card = document.getElementById('district-map-card');
     const title = document.getElementById('district-map-title');
     const legend = document.getElementById('district-map-legend');
+    card.hidden = true;
     if (!mapAnswer) {
-        title.innerText = 'İlçe Haritası';
         legend.innerHTML = '';
-        districtMapEl.innerHTML = DISTRICT_PLACEHOLDER;
+        districtMapEl.innerHTML = '';
         districtMapEl.setAttribute('aria-label', 'İlçe haritası');
         return;
     }
@@ -2255,20 +2538,17 @@ function renderDistrictMap() {
         districtMapEl.innerHTML = svg;
         const path = districtMapEl.querySelector(`path[data-ilce="${escapeAttr(ilce)}"]`);
         if (path) path.classList.add('is-correct');
+        card.hidden = false;
     };
 
     if ((window.ilceBilmeceMaps || {})[plaka]) {
         draw(window.ilceBilmeceMaps[plaka]);
         return;
     }
-    districtMapEl.innerHTML = '<p class="map-placeholder">İlçe haritası yükleniyor...</p>';
+    districtMapEl.innerHTML = '';
     loadMapScript(plaka, `maps/ilceler/${plaka}.js`)
         .then(draw)
-        .catch(() => {
-            if (mapAnswer && mapAnswer.correct === correct) {
-                districtMapEl.innerHTML = '<p class="map-placeholder">İlçe haritası yüklenemedi (çevrimdışı olabilirsin).</p>';
-            }
-        });
+        .catch(() => { /* Yüklenemezse kart gizli kalır */ });
 }
 
 // Cevap verildiğinde: doğru il yeşil, yanlış seçilen il kırmızı; ilçe haritasında sorulan ilçe yeşil
@@ -2354,10 +2634,139 @@ if ('serviceWorker' in navigator) {
     });
 }
 
+/* ================= 16. UYGULAMA YÜKLEME ÖNERİSİ ================= */
+// Mobilde, uygulama yüklü değilse ilk girişte ve ilk oyun bittiğinde birer kez yükleme önerisi
+// gösterilir; sonrasında en son gösterimden itibaren 2 gün geçmeden tekrar gösterilmez.
+// - Chromium (Android Chrome, Samsung Internet...): tarayıcının kendi önerisi (beforeinstallprompt)
+//   bastırılır, "Yükle" butonu tarayıcının yükleme penceresini açar (iki öneri üst üste çıkmaz).
+// - iOS: otomatik yükleme yoktur; "Paylaş → Ana Ekrana Ekle" adımları gösterilir.
+// - Diğerleri (ör. Firefox): menüden yükleme adımları gösterilir.
+const INSTALL_PROMPT_KEY = 'ilce_install_prompt';
+const INSTALL_PROMPT_COOLDOWN = 2 * DAY_MS;
+const INSTALL_SHARE_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>';
+
+let deferredInstallPrompt = null;
+const installBanner = document.getElementById('install-banner');
+
+function isAppInstalled() {
+    return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
+        window.navigator.standalone === true;
+}
+
+function isIOSDevice() {
+    return /iphone|ipad|ipod/i.test(navigator.userAgent) ||
+        (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1); // iPadOS masaüstü kimliğiyle gelir
+}
+
+function loadInstallState() {
+    try {
+        return Object.assign({ entryShown: false, gameEndShown: false, lastShown: 0, installed: false },
+            JSON.parse(safeGetItem(INSTALL_PROMPT_KEY) || '{}'));
+    } catch (e) {
+        return { entryShown: false, gameEndShown: false, lastShown: 0, installed: false };
+    }
+}
+
+function saveInstallState(state) {
+    safeSetItem(INSTALL_PROMPT_KEY, JSON.stringify(state));
+}
+
+// Yükleme yolu: 'prompt' (tarayıcı penceresi), 'ios', 'manual' ya da null (gösterilmez)
+function getInstallMethod() {
+    const isTouch = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+    if (!window.isSecureContext || !isTouch || isAppInstalled()) return null;
+    if (deferredInstallPrompt) return 'prompt';
+    if (isIOSDevice()) return 'ios';
+    // Chromium olayı desteklediği hâlde göndermediyse uygulama zaten yüklüdür ya da tarayıcı
+    // yüklemeye uygun görmemiştir; bu durumda öneri gösterilmez
+    if ('onbeforeinstallprompt' in window) return null;
+    return 'manual';
+}
+
+function maybeShowInstallPrompt(trigger) {
+    if (!installBanner || !installBanner.hidden) return;
+    const method = getInstallMethod();
+    if (!method) return;
+    const state = loadInstallState();
+    if (state.installed) return;
+    const firstTime = trigger === 'entry' ? !state.entryShown : !state.gameEndShown;
+    if (!firstTime && Date.now() - state.lastShown < INSTALL_PROMPT_COOLDOWN) return;
+
+    state[trigger === 'entry' ? 'entryShown' : 'gameEndShown'] = true;
+    state.lastShown = Date.now();
+    saveInstallState(state);
+    showInstallBanner(method);
+}
+
+// Oyun sonu penceresi açıldıktan kısa süre sonra gösterilir
+function scheduleInstallPrompt(trigger) {
+    setTimeout(() => maybeShowInstallPrompt(trigger), trigger === 'entry' ? 3000 : 1200);
+}
+
+function showInstallBanner(method) {
+    const desc = document.getElementById('install-banner-desc');
+    const installBtn = document.getElementById('install-banner-btn');
+    if (method === 'prompt') {
+        desc.innerText = 'Ana ekranından tek dokunuşla aç, internet olmadan da oyna.';
+    } else if (method === 'ios') {
+        desc.innerHTML = `Paylaş ${INSTALL_SHARE_ICON} simgesine, ardından <strong>Ana Ekrana Ekle</strong>'ye dokun.`;
+    } else {
+        desc.innerHTML = 'Tarayıcı menüsünden <strong>Ana ekrana ekle</strong> veya <strong>Uygulamayı yükle</strong>\'yi seç.';
+    }
+    installBtn.hidden = method !== 'prompt';
+    installBanner.hidden = false;
+    // Öneri sayfanın altını kapatmasın: sayfanın sonuna öneri yüksekliği kadar boşluk eklenir
+    const space = `${installBanner.offsetHeight + 24}px`;
+    document.body.style.paddingBottom = space;
+    document.documentElement.style.setProperty('--install-banner-space', space);
+}
+
+function hideInstallBanner() {
+    if (!installBanner) return;
+    installBanner.hidden = true;
+    document.body.style.paddingBottom = '';
+    document.documentElement.style.removeProperty('--install-banner-space');
+}
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault(); // Tarayıcının kendi önerisi yerine bizimki gösterilir
+    deferredInstallPrompt = e;
+});
+
+window.addEventListener('appinstalled', () => {
+    const state = loadInstallState();
+    state.installed = true;
+    saveInstallState(state);
+    deferredInstallPrompt = null;
+    hideInstallBanner();
+});
+
+document.getElementById('install-banner-btn').onclick = () => {
+    if (!deferredInstallPrompt) {
+        hideInstallBanner();
+        return;
+    }
+    const promptEvent = deferredInstallPrompt;
+    deferredInstallPrompt = null; // Tarayıcı penceresi yalnızca bir kez açılabilir
+    promptEvent.prompt();
+    promptEvent.userChoice.then((choice) => {
+        if (choice && choice.outcome === 'accepted') {
+            const state = loadInstallState();
+            state.installed = true;
+            saveInstallState(state);
+        }
+    }).catch(() => {});
+    hideInstallBanner();
+};
+
+document.getElementById('install-banner-close').onclick = hideInstallBanner;
+
 function initApp() {
     // Paylaşılan bağlantı (?mod=gunluk) doğrudan Günün Bilmecesi'ni açar
     const params = new URLSearchParams(window.location.search);
     prepareGame(params.get('mod') === 'gunluk' ? 'daily' : 'classic');
+    // Chromium'un yükleme olayı (beforeinstallprompt) genelde ilk saniyelerde gelir; öneri biraz beklenip gösterilir
+    scheduleInstallPrompt('entry');
 }
 
 if (document.readyState === 'loading') {

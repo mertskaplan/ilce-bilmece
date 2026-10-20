@@ -41,6 +41,7 @@ Her gün Türkiye saatiyle 00.00'da yeni bir bulmaca açılır. İlk bulmaca (#1
   ```
 
   🟩 doğru, 🟨 ipucuyla doğru, 🟥 yanlış. Bağlantıdaki `?mod=gunluk` oyunu doğrudan Günün Bilmecesi'nde açar.
+- **Görsel paylaşım:** Sonuç, oyuncunun seçtiği temada (aydınlık/karanlık) 1080×1080 bir görsel olarak da paylaşılabilir. Görselde skor, skora göre bir unvan, kareler, süre, seri ve oyunun adresi yer alır; il ve ilçe adları yer almaz. Görsel tarayıcıda Canvas ile üretilir. Destekleyen cihazlarda (Android, iPhone) paylaşım menüsüyle Instagram, WhatsApp gibi uygulamalara gönderilir; desteklemeyenlerde PNG olarak indirilir.
 
 ### Bulmacalar nasıl üretilir?
 

@@ -1,9 +1,8 @@
 /* İlçe Bilmece - Saf Önbellek Odaklı Service Worker */
-const CACHE_NAME = 'ilce-bilmece-v2.5.4'; // Sürüm değiştiğinde tüm önbellek sunucudan sıfırlanır
+const CACHE_NAME = 'ilce-bilmece-v2.8.1'; // Sürüm değiştiğinde tüm önbellek sunucudan sıfırlanır
 
 const ASSETS = [
     './',
-    './index.html',
     './scripts.js',
     './datasets.js',
     './styles.css',
@@ -56,7 +55,9 @@ self.addEventListener('fetch', (event) => {
     if (event.request.method !== 'GET') return;
 
     event.respondWith(
-        caches.match(event.request).then((cachedResponse) => {
+        // Sayfa gezinmelerinde sorgu parametreleri (?mod=gunluk, ?utm_source=pwa) yok sayılır:
+        // önbellekteki './' her bağlantıyla çevrimdışı açılabilir
+        caches.match(event.request, { ignoreSearch: event.request.mode === 'navigate' }).then((cachedResponse) => {
             // Önbellekte varsa ANINDA dön
             if (cachedResponse) {
                 return cachedResponse;
