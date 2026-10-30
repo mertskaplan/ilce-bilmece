@@ -1179,7 +1179,7 @@ const ilEkstraBilgiler = {
         mekan: ["Taşköprü", "Sabancı Merkez Camii", "Varda Köprüsü", "Anavarza Antik Kenti"],
         unluler: ["Yaşar Kemal", "Yılmaz Güney", "Müslüm Gürses", "Fatih Terim", "Haluk Levent", "Orhan Kemal"],
         cografya: ["Çukurova", "Seyhan Nehri", "Ceyhan Nehri", "Toroslar"],
-        ekonomi: ["pamuk, mısır ve narenciye üretimi", "tekstil dokuma sanayisi", "kimya ve plastik sektörü"],
+        ekonomi: ["pamuk ve mısır üretimi", "narenciye üretimi", "tekstil dokuma sanayisi", "kimya ve plastik sektörü"],
         onemliYerler: ["Çukurova Uluslararası Havalimanı", "Çukurova Üniversitesi", "Akdeniz kıyısı", "Karataş sahili"],
         komsular: ["Mersin", "Hatay", "Osmaniye", "Niğde", "Kayseri"]
     },
@@ -1213,7 +1213,8 @@ const ilEkstraBilgiler = {
         unluler: ["Nizamettin Arıç", "İbrahim Çeçen"],
         cografya: ["Tendürek Dağı", "Murat Nehri", "Balık Gölü"],
         ekonomi: ["büyükbaş ve küçükbaş hayvancılık", "yem bitkileri üretimi", "şeker pancarı", "sınır lojistiği"],
-        onemliYerler: ["Gürbulak Gümrük Kapısı", "İran ile sınır komşuluğu", "İbrahim Çeçen Üniversitesi"],
+        onemliYerler: ["Gürbulak Gümrük Kapısı", "İbrahim Çeçen Üniversitesi"],
+        sinir: ["İran"],
         komsular: ["Iğdır", "Kars", "Erzurum", "Muş", "Bitlis", "Van"]
     },
     "Amasya": {
@@ -1223,7 +1224,7 @@ const ilEkstraBilgiler = {
         mekan: ["Kral Kaya Mezarları", "Ferhat ile Şirin Su Kanalı", "Şehzadeler Yolu Yalıboyu Evleri"],
         unluler: ["Şerafeddin Sabuncuoğlu", "Mihri Hatun", "Mahmut Demir"],
         cografya: ["Yeşilırmak Nehri vadisi", "Boraboy Gölü", "Harşena Dağı"],
-        ekonomi: ["elma, kiraz, soğan tarımı", "un ve unlu mamuller sanayisi", "mermer işleme"],
+        ekonomi: ["elma ve kiraz tarımı", "soğan tarımı", "un ve unlu mamuller sanayisi", "mermer işleme"],
         onemliYerler: ["Boraboy Tabiat Parkı"],
         komsular: ["Samsun", "Tokat", "Yozgat", "Çorum"]
     },
@@ -1234,7 +1235,7 @@ const ilEkstraBilgiler = {
         mekan: ["Anıtkabir", "tarihi hisar ve kale", "Gordion Antik Kenti", "Hacı Bayram Camii"],
         unluler: ["Beren Saat", "Beyazıt Öztürk", "Kartal Tibet", "Erdal Beşikçioğlu"],
         cografya: ["Mogan Gölü", "Eymir Gölü", "Kızılırmak kolları", "Elmadağ"],
-        ekonomi: ["savunma sanayi devleri", "kamu yönetimi", "buğday ve tiftik keçisi yetiştiriciliği"],
+        ekonomi: ["savunma sanayisi", "kamu yönetimi", "buğday ve tiftik keçisi yetiştiriciliği"],
         onemliYerler: ["Orta Doğu Teknik Üniversitesi", "Hacettepe Üniversitesi", "Bilkent Üniversitesi", "Esenboğa Havalimanı", "Eryaman Stadyumu"],
         komsular: ["Çankırı", "Kırıkkale", "Kırşehir", "Aksaray", "Konya", "Eskişehir", "Bolu"]
     },
@@ -1257,7 +1258,8 @@ const ilEkstraBilgiler = {
         unluler: ["Kazım Koyuncu", "Şükrü Saracoğlu", "Merve Özbey"],
         cografya: ["Çoruh Nehri", "Kaçkar Dağları etekleri", "Karagöl"],
         ekonomi: ["hidroelektrik santralleri", "çay ve kivi tarımı", "ormancılık"],
-        onemliYerler: ["Sarp Sınır Kapısı", "Gürcistan ile sınır komşuluğu", "Çoruh Üniversitesi"],
+        onemliYerler: ["Sarp Sınır Kapısı", "Çoruh Üniversitesi"],
+        sinir: ["Gürcistan"],
         komsular: ["Rize", "Erzurum", "Ardahan"]
     },
     "Aydın": {
@@ -1322,7 +1324,7 @@ const ilEkstraBilgiler = {
         mekan: ["Abant Gölü", "Yedigöller Milli Parkı", "Gölcük Tabiat Parkı", "Tarihi Zafer Kulesi"],
         unluler: ["İzzet Baysal", "Mengenli Usta Şefler"],
         cografya: ["Köroğlu Dağları", "Abant Gölü", "Yedigöller göller platosu"],
-        ekonomi: ["beyaz et entegre üretim merkezleri", "orman ürünleri ve kereste sanayisi", "termal turizm"],
+        ekonomi: ["beyaz et üretimi", "orman ürünleri ve kereste sanayisi", "termal turizm"],
         onemliYerler: ["Abant İzzet Baysal Üniversitesi", "Kartalkaya Kayak Merkezi"],
         komsular: ["Düzce", "Zonguldak", "Karabük", "Çankırı", "Ankara", "Eskişehir", "Sakarya"]
     },
@@ -1344,7 +1346,7 @@ const ilEkstraBilgiler = {
         mekan: ["Ulu Camii", "Yeşil Türbe", "Cumalıkızık tarihi köyü", "Koza Han İpekçiler Çarşısı"],
         unluler: ["Zeki Müren", "Müzeyyen Senar", "Ata Demirer", "Erkan Can", "Hande Erçel"],
         cografya: ["Uludağ", "İznik Gölü", "Nilüfer Çayı"],
-        ekonomi: ["Türkiye otomotiv sanayisinin merkezi", "tekstil ve dokuma fabrikaları", "mobilya üretimi", "şeftali bahçeleri"],
+        ekonomi: ["otomotiv sanayisi", "tekstil ve dokuma fabrikaları", "mobilya üretimi", "şeftali bahçeleri"],
         onemliYerler: ["Uludağ Üniversitesi", "Timsah Park Stadyumu", "Uludağ Kayak Merkezi", "Marmara Denizi kıyısı"],
         komsular: ["Yalova", "Kocaeli", "Bilecik", "Kütahya", "Balıkesir"]
     },
@@ -1366,7 +1368,7 @@ const ilEkstraBilgiler = {
         mekan: ["tarihi Kaya Tuzu Mağarası", "Taş Mescit", "tarihi saat kulesi"],
         unluler: ["Tevfik Fikret", "İsmail Hakkı Karadayı"],
         cografya: ["Ilgaz Dağları güney etekleri", "Devrez Çayı vadisi"],
-        ekonomi: ["kaya tuzu madenciliği ve tuz sanayisi", "buğday, kavun ve arpa tarımı"],
+        ekonomi: ["kaya tuzu madenciliği ve tuz sanayisi", "buğday ve arpa tarımı", "kavun tarımı"],
         onemliYerler: ["Karatekin Üniversitesi", "Yıldıztepe Kayak Merkezi"],
         komsular: ["Ankara", "Kırıkkale", "Çorum", "Karabük", "Bolu", "Kastamonu"]
     },
@@ -1388,7 +1390,7 @@ const ilEkstraBilgiler = {
         mekan: ["Pamukkale travertenleri", "Hierapolis Antik Kenti", "Kleopatra Havuzu", "Kaklık Mağarası"],
         unluler: ["Sezen Aksu", "Sıla", "Özay Gönlüm", "Keremcem"],
         cografya: ["Honaz Dağı", "Büyük Menderes Vadisi", "Işıklı Gölü"],
-        ekonomi: ["tekstil, havlu ve bornoz ihracatı devi", "traverten mermer işletmeleri", "kabuklu kuruyemiş işleme"],
+        ekonomi: ["tekstil ihracatı", "havlu ve bornoz ihracatı", "traverten mermer işletmeleri", "kabuklu kuruyemiş işleme"],
         onemliYerler: ["Pamukkale Üniversitesi", "Horoz Heykeli Meydanı"],
         komsular: ["Manisa", "Uşak", "Afyonkarahisar", "Burdur", "Muğla", "Aydın"]
     },
@@ -1399,7 +1401,7 @@ const ilEkstraBilgiler = {
         mekan: ["tarihi taş surlar", "Hevsel Bahçeleri", "On Gözlü Köprü", "Ulu Camii"],
         unluler: ["Cahit Sıtkı Tarancı", "Ahmed Arif", "Ziya Gökalp", "Alişan", "Celal Güzelses"],
         cografya: ["Dicle Nehri", "Karacadağ Sönmüş Volkanı", "Dicle Vadisi"],
-        ekonomi: ["kırmızı mercimek, buğday ve pamuk tarımı", "mermer ihracatı", "ipekböcekçiliği", "gümüş işlemeciliği"],
+        ekonomi: ["kırmızı mercimek tarımı", "buğday ve pamuk tarımı", "mermer ihracatı", "ipekböcekçiliği", "gümüş işlemeciliği"],
         onemliYerler: ["Dicle Üniversitesi"],
         komsular: ["Batman", "Muş", "Bingöl", "Elâzığ", "Malatya", "Adıyaman", "Şanlıurfa", "Mardin"]
     },
@@ -1410,8 +1412,9 @@ const ilEkstraBilgiler = {
         mekan: ["Selimiye Camii", "tarihi Kırkpınar Er Meydanı", "Meriç Köprüsü", "II. Bayezid Külliyesi"],
         unluler: ["İlhan Koman", "Cem Adrian", "Fatih Sultan Mehmet"],
         cografya: ["Meriç Nehri", "Tunca Nehri", "Ergene Nehri"],
-        ekonomi: ["Türkiye çeltik üretiminin birincisi", "ayçiçeği ve ayçiçek yağı sanayisi", "mandıracılık"],
-        onemliYerler: ["Kapıkule Sınır Kapısı", "Hamzabeyli Sınır Kapısı", "İpsala Sınır Kapısı", "Trakya Üniversitesi", "Yunanistan ve Bulgaristan ile sınır komşuluğu"],
+        ekonomi: ["çeltik üretimi", "ayçiçeği ve ayçiçek yağı sanayisi", "mandıracılık"],
+        onemliYerler: ["Kapıkule Sınır Kapısı", "Hamzabeyli Sınır Kapısı", "İpsala Sınır Kapısı", "Trakya Üniversitesi"],
+        sinir: ["Yunanistan", "Bulgaristan"],
         komsular: ["Kırklareli", "Tekirdağ", "Çanakkale"]
     },
     "Elâzığ": {
@@ -1421,7 +1424,7 @@ const ilEkstraBilgiler = {
         mekan: ["tarihi Harput Kalesi", "Harput Ulu Camii", "Buzluk Mağarası", "Hazar Gölü"],
         unluler: ["Kenan Çoban", "Necati Şaşmaz", "Fatih Kısaparmak", "Bülent Serttaş"],
         cografya: ["Hazar Gölü", "Keban Baraj Gölü kıyıları", "Fırat Nehri"],
-        ekonomi: ["ferrokrom tesisleri ve zengin krom madenciliği", "tatlı su alabalık üretimi ve ihracatı", "Öküzgözü üzüm bağcılığı"],
+        ekonomi: ["ferrokrom tesisleri ve krom madenciliği", "tatlı su alabalık üretimi ve ihracatı", "Öküzgözü üzüm bağcılığı"],
         onemliYerler: ["Fırat Üniversitesi", "Hazarbaba Kayak Merkezi"],
         komsular: ["Malatya", "Tunceli", "Bingöl", "Diyarbakır"]
     },
@@ -1451,7 +1454,7 @@ const ilEkstraBilgiler = {
         plaka: "26",
         bolge: "İç Anadolu",
         lezzet: ["çibörek", "Balaban köfte", "met helvası", "haşhaşlı çörek"],
-        mekan: ["tarihi Odunpazarı Evleri", "Porsuk Çayı gondol gezisi", "Sazova Bilim, Kültür ve Sanat Parkı", "Kurşunlu Külliyesi"],
+        mekan: ["tarihi Odunpazarı Evleri", "Porsuk Çayı kıyısı", "Sazova Bilim Kültür ve Sanat Parkı", "Kurşunlu Külliyesi"],
         unluler: ["Yunus Emre", "Cüneyt Arkın", "Nuri Alço", "Enis Batur"],
         cografya: ["Porsuk Çayı", "Türkmen Dağı", "Yazılıkaya Midas Platosu"],
         ekonomi: ["havacılık motor sanayisi", "raylı sistemler ve lokomotif fabrikası", "beyaz eşya sanayisi", "bisküvi üretimi", "lületaşı işlemeciliği"],
@@ -1465,8 +1468,9 @@ const ilEkstraBilgiler = {
         mekan: ["Zeugma Mozaik Müzesi", "tarihi kale", "Bakırcılar Çarşısı", "Tahmis Kahvesi"],
         unluler: ["Edip Akbayram", "Ahmet Ümit", "Hazal Kaya"],
         cografya: ["Fırat Nehri kıyıları", "Dülükbaba Tepesi", "Sof Dağları"],
-        ekonomi: ["Türkiye'nin en büyük organize sanayi bölgelerinden biri", "makine halısı dokuma dünya lideri", "fıstık tarımı ve ihracatı"],
+        ekonomi: ["organize sanayi bölgeleri", "makine halısı dokumacılığı", "fıstık tarımı ve ihracatı"],
         onemliYerler: ["Hasan Kalyoncu Üniversitesi", "Sanko Üniversitesi", "Kalyon Stadyumu"],
+        sinir: ["Suriye"],
         komsular: ["Kilis", "Hatay", "Osmaniye", "Kahramanmaraş", "Adıyaman", "Şanlıurfa"]
     },
     "Giresun": {
@@ -1476,7 +1480,7 @@ const ilEkstraBilgiler = {
         mekan: ["Kümbet Yaylası", "tarihi kale ve ada", "Bektaş Yaylası"],
         unluler: ["Topal Osman", "Ömer Lütfi Barkan"],
         cografya: ["Harşit Çayı", "Kümbet Yaylası", "Karadeniz kıyı şeridi"],
-        ekonomi: ["en kaliteli yağ oranına sahip fındık üretimi ve mamulleri", "çay tarımı", "balıkçılık"],
+        ekonomi: ["fındık üretimi ve fındık mamulleri", "çay tarımı", "balıkçılık"],
         onemliYerler: ["Çotanak Spor Kompleksi", "mavi bayraklı plajlar", "Karadeniz kıyıları"],
         komsular: ["Trabzon", "Gümüşhane", "Erzincan", "Sivas", "Ordu"]
     },
@@ -1499,7 +1503,8 @@ const ilEkstraBilgiler = {
         unluler: ["Yılmaz Erdoğan", "Ersin Korkut"],
         cografya: ["Cilo Dağı", "Zap Nehri", "Sümbül Dağı"],
         ekonomi: ["çinko ve kurşun madenciliği", "küçükbaş hayvancılık", "arıcılık", "sınır ticareti lojistiği"],
-        onemliYerler: ["Esendere Gümrük Kapısı", "Üzümlü Sınır Kapısı", "İran ve Irak ile sınır komşuluğu", "Merga Bütan Kayak Merkezi"],
+        onemliYerler: ["Esendere Gümrük Kapısı", "Üzümlü Sınır Kapısı", "Merga Bütan Kayak Merkezi"],
+        sinir: ["İran", "Irak"],
         komsular: ["Van", "Şırnak"]
     },
     "Hatay": {
@@ -1510,7 +1515,8 @@ const ilEkstraBilgiler = {
         unluler: ["Gökhan Zan", "Selami Şahin", "Hamdi Alkan"],
         cografya: ["Asi Nehri", "Amanos Dağları", "Amik Ovası"],
         ekonomi: ["demir-çelik ağır sanayisi", "narenciye ve zeytincilik", "Akdeniz yaş meyve sebze ihracatı"],
-        onemliYerler: ["Mustafa Kemal Üniversitesi", "İskenderun Teknik Üniversitesi", "Cilvegözü ve Yayladağı Sınır Kapıları", "Suriye ile sınır komşuluğu", "Samandağ sahili"],
+        onemliYerler: ["Mustafa Kemal Üniversitesi", "İskenderun Teknik Üniversitesi", "Cilvegözü ve Yayladağı Sınır Kapıları", "Samandağ sahili"],
+        sinir: ["Suriye"],
         komsular: ["Adana", "Osmaniye", "Gaziantep"]
     },
     "Isparta": {
@@ -1520,7 +1526,7 @@ const ilEkstraBilgiler = {
         mekan: ["Kuyucak Lavanta Bahçeleri", "Eğirdir Gölü Yeşilada", "Davraz Kayak Merkezi", "Antiocheia Antik Kenti"],
         unluler: ["Süleyman Demirel", "Zeki Demirkubuz"],
         cografya: ["Eğirdir Gölü", "Kovada Gölü Milli Parkı", "Davraz Dağı"],
-        ekonomi: ["dünya gül yağı üretiminin yarısından fazlası", "lavanta bahçeleri", "elma yetiştiriciliği", "halı dokumacılığı"],
+        ekonomi: ["gül yağı üretimi", "lavanta bahçeleri", "elma yetiştiriciliği", "halı dokumacılığı"],
         onemliYerler: ["Süleyman Demirel Üniversitesi", "Eğirdir Altınkum Plajı"],
         komsular: ["Antalya", "Burdur", "Afyonkarahisar", "Konya"]
     },
@@ -1531,7 +1537,7 @@ const ilEkstraBilgiler = {
         mekan: ["Kızkalesi", "Cennet ve Cehennem Obrukları", "Eshab-ı Kehf Mağarası", "Kanlıdivane"],
         unluler: ["Ahmet Kural", "Mabel Matiz", "Suna Tanaltay", "Fikret Otyam"],
         cografya: ["Göksu Nehri", "Berdan Çayı", "Toros Dağları etekleri"],
-        ekonomi: ["Türkiye'nin en büyük uluslararası konteyner limanlarından biri", "örtü altı muz ve narenciye tarımı", "seracılık"],
+        ekonomi: ["uluslararası konteyner limancılığı", "örtü altı muz ve narenciye tarımı", "seracılık"],
         onemliYerler: ["Toros Üniversitesi", "Çukurova Uluslararası Havalimanı", "Kızkalesi Halk Plajı", "Akdeniz kıyıları"],
         komsular: ["Adana", "Niğde", "Konya", "Karaman", "Antalya"]
     },
@@ -1542,7 +1548,7 @@ const ilEkstraBilgiler = {
         mekan: ["Ayasofya", "Topkapı Sarayı", "Galata Kulesi", "boğaz köprüleri", "Yerebatan Sarnıcı"],
         unluler: ["Barış Manço", "Cem Karaca", "Kemal Sunal", "Haluk Bilginer", "Şener Şen"],
         cografya: ["iki kıtayı birleştiren masmavi Boğaziçi", "Haliç", "Terkos Gölü", "Belgrad Ormanları"],
-        ekonomi: ["Türkiye ekonomisinin, finans merkezinin, uluslararası ticaretin ve hazır giyim sanayisinin kalbi"],
+        ekonomi: ["finans sektörü", "uluslararası ticaret", "hazır giyim sanayisi"],
         onemliYerler: ["Boğaziçi Üniversitesi", "Yıldız Teknik Üniversitesi", "Sabiha Gökçen Havalimanı", "Şükrü Saracoğlu Stadyumu"],
         komsular: ["Kocaeli", "Tekirdağ"]
     },
@@ -1553,7 +1559,7 @@ const ilEkstraBilgiler = {
         mekan: ["tarihi Saat Kulesi", "Efes ve Bergama Antik Kentleri", "Kordon Boyu", "Kemeraltı Çarşısı"],
         unluler: ["Sezen Aksu", "Tanju Okan", "Çağan Irmak", "Halit Ergenç", "Nehir Erdoğan"],
         cografya: ["Gediz Nehri Deltası", "Küçük Menderes Vadisi", "Bozdağlar", "Yamanlar Dağı"],
-        ekonomi: ["Aliağa petrokimya ve rafineri kompleksi", "Ege Serbest Bölgesi", "zeytin, incir ve çekirdeksiz üzüm ihracatı", "liman ticareti"],
+        ekonomi: ["Aliağa petrokimya ve rafineri kompleksi", "Ege Serbest Bölgesi", "zeytin ve incir ihracatı", "çekirdeksiz üzüm ihracatı", "liman ticareti"],
         onemliYerler: ["Ege Üniversitesi", "Dokuz Eylül Üniversitesi", "Adnan Menderes Havalimanı", "Ilıca Plajı", "Gürsel Aksel Stadyumu"],
         komsular: ["Aydın", "Manisa", "Balıkesir"]
     },
@@ -1561,11 +1567,12 @@ const ilEkstraBilgiler = {
         plaka: "36",
         bolge: "Doğu Anadolu",
         lezzet: ["eski kaşar", "göbek kaşarı", "gravyer peyniri", "tandırda kaz eti", "hangal"],
-        mekan: ["Ani Harabeleri", "Çıldır Gölü atlı kızakları", "tarihi Taş Kümbet Camii", "Fethiye Camii"],
+        mekan: ["Ani Harabeleri", "Çıldır Gölü", "tarihi Taş Kümbet Camii", "Fethiye Camii"],
         unluler: ["Tamer Karadağlı", "Aşık Şenlik"],
         cografya: ["Aras Nehri kolları", "Çıldır Gölü", "Allahuekber Dağları platosu"],
         ekonomi: ["mandıracılık ve sert kabuklu gravyer peyniri üretimi", "kış turizmi", "büyükbaş yayla hayvancılığı"],
-        onemliYerler: ["Kafkas Üniversitesi", "Sarıkamış Kayak Merkezi", "Ermenistan ile sınır komşuluğu"],
+        onemliYerler: ["Kafkas Üniversitesi", "Sarıkamış Kayak Merkezi"],
+        sinir: ["Ermenistan"],
         komsular: ["Ardahan", "Erzurum", "Ağrı", "Iğdır"]
     },
     "Kastamonu": {
@@ -1575,7 +1582,7 @@ const ilEkstraBilgiler = {
         mekan: ["Valla Kanyonu", "Horma Kanyonu Ahşap Yürüyüş Yolu", "Ilıca Şelalesi", "tarihi saat kulesi"],
         unluler: ["Rıfat Ilgaz", "Şerife Bacı", "Cihan Ünal"],
         cografya: ["Küre Dağları Milli Parkı", "Ilgaz Dağları", "Gökırmak Vadisi"],
-        ekonomi: ["Türkiye'nin en kaliteli sarımsak üretimi", "Küre bakır madenciliği tesisleri", "orman ürünleri", "ahşap yonga levha sanayisi"],
+        ekonomi: ["sarımsak üretimi", "Küre bakır madenciliği tesisleri", "orman ürünleri", "ahşap yonga levha sanayisi"],
         onemliYerler: ["Ilgaz 15 Temmuz İstiklal Tüneli", "Cide sahili", "Karadeniz kıyıları"],
         komsular: ["Sinop", "Çorum", "Çankırı", "Bartın", "Karabük"]
     },
@@ -1586,7 +1593,7 @@ const ilEkstraBilgiler = {
         mekan: ["tarihi kale", "Kapuzbaşı Takım Şelaleleri", "Gevher Nesibe Tıp Medresesi", "Hunat Hatun Külliyesi"],
         unluler: ["Abdullah Gül", "Kadir Has", "Sakıp Sabancı", "Baha Boduroğlu"],
         cografya: ["Erciyes Dağı", "Kızılırmak Nehri", "Sultansazlığı Kuş Cenneti"],
-        ekonomi: ["mobilya üretim ve ihracat üssü", "çelik kapı üretimi", "elektrikli ev aletleri imalatı", "et mamulleri sanayisi"],
+        ekonomi: ["mobilya üretimi ve ihracatı", "çelik kapı üretimi", "elektrikli ev aletleri imalatı", "et mamulleri sanayisi"],
         onemliYerler: ["Erciyes Üniversitesi", "Abdullah Gül Üniversitesi", "Erciyes Kayak Merkezi"],
         komsular: ["Yozgat", "Sivas", "Kahramanmaraş", "Adana", "Niğde", "Nevşehir"]
     },
@@ -1598,7 +1605,8 @@ const ilEkstraBilgiler = {
         unluler: ["Candan Erçetin", "Sabahattin Ali"],
         cografya: ["Yıldız Dağları", "Longoz gölleri", "Karadeniz kıyı şeridi"],
         ekonomi: ["cam ve cam eşya sanayisi fabrikaları", "ayçiçeği ve buğday tarımı", "süt mandıracılığı"],
-        onemliYerler: ["Dereköy Gümrük Kapısı", "Bulgaristan ile sınır komşuluğu", "İğneada Plajı"],
+        onemliYerler: ["Dereköy Gümrük Kapısı", "İğneada Plajı"],
+        sinir: ["Bulgaristan"],
         komsular: ["Edirne", "Tekirdağ", "İstanbul"]
     },
     "Kırşehir": {
@@ -1608,7 +1616,7 @@ const ilEkstraBilgiler = {
         mekan: ["Cacabey Medresesi", "Ahi Evran Türbesi", "Neşet Ertaş Gönül Sultanı Evi"],
         unluler: ["Neşet Ertaş", "Muharrem Ertaş", "Ahi Evran"],
         cografya: ["Seyfe Gölü Sulak Alanı", "Kızılırmak havzası"],
-        ekonomi: ["oto ve uçak lastiği fabrikası", "ceviz bahçeleri ve üretimi", "un ve yem sektörü"],
+        ekonomi: ["oto ve uçak lastiği fabrikası", "ceviz üretimi", "un ve yem sektörü"],
         onemliYerler: ["Ahi Evran Üniversitesi", "Seyfe Gölü Tabiat Koruma Alanı"],
         komsular: ["Ankara", "Kırıkkale", "Yozgat", "Nevşehir", "Aksaray"]
     },
@@ -1630,7 +1638,7 @@ const ilEkstraBilgiler = {
         mekan: ["Mevlana Türbesi ve Müzesi", "Çatalhöyük Neolitik Kenti", "Alaeddin Tepesi", "Karatay Medresesi"],
         unluler: ["Mevlana Celaleddin-i Rumi", "Ahmet Davutoğlu", "Murat Kurum"],
         cografya: ["Tuz Gölü güney havzası", "Beyşehir Gölü", "Meke Maar Krater Gölü", "Sonsuz Düzlük Ovası"],
-        ekonomi: ["Türkiye'nin tahıl ambarı", "şeker pancarı fabrikaları", "traktör ve tarım makineleri sanayisi", "otomotiv yedek parça"],
+        ekonomi: ["tahıl üretimi", "şeker pancarı fabrikaları", "traktör ve tarım makineleri sanayisi", "otomotiv yedek parça"],
         onemliYerler: ["Selçuk Üniversitesi", "Necmettin Erbakan Üniversitesi", "Beyşehir Gölü Milli Parkı"],
         komsular: ["Ankara", "Aksaray", "Niğde", "Karaman", "Antalya", "Isparta", "Afyonkarahisar"]
     },
@@ -1651,8 +1659,8 @@ const ilEkstraBilgiler = {
         lezzet: ["kuru sarı ve günkurusu kayısı", "analı kızlı köftesi", "kâğıt kebabı", "kiraz yaprağı sarması"],
         mekan: ["Arslantepe Höyüğü", "Levent Kanyonu Cam Seyir Terası", "Battalgazi Ulu Camii"],
         unluler: ["Turgut Özal", "İsmet İnönü", "Kemal Sunal", "Ahmet Kaya"],
-        cografya: ["Fırat Nehri havzası", "Beydağları zirveleri", "Sultansuyu Harası"],
-        ekonomi: ["dünya kuru kayısı ihracatının yaklaşık yüzde 85'ini karşılayan üretim üssü", "tekstil ve iplik fabrikaları"],
+        cografya: ["Fırat Nehri havzası", "Beydağları zirveleri", "Karakaya Baraj Gölü"],
+        ekonomi: ["kuru kayısı üretimi", "kayısı ihracatı", "tekstil ve iplik fabrikaları"],
         onemliYerler: ["İnönü Üniversitesi", "Turgut Özal Üniversitesi"],
         komsular: ["Elâzığ", "Diyarbakır", "Adıyaman", "Kahramanmaraş", "Sivas", "Erzincan"]
     },
@@ -1674,7 +1682,7 @@ const ilEkstraBilgiler = {
         mekan: ["tarihi taş kale", "Yedi Güzel Adam Edebiyat Müzesi", "tarihi Kapalı Çarşı", "Germenicia Mozaikleri"],
         unluler: ["Necip Fazıl Kısakürek", "Sezai Karakoç", "Cahit Zarifoğlu", "Erdem Bayazıt", "Soner Sarıkabadayı"],
         cografya: ["Ahır Dağı", "Ceyhan Nehri", "Menzelet Baraj Gölü"],
-        ekonomi: ["tekstil iplik ve pamuklu dokuma sanayisi devi", "paslanmaz çelik tencere ve mutfak eşyaları üretimi", "dondurma sektörü"],
+        ekonomi: ["tekstil iplik ve pamuklu dokuma sanayisi", "paslanmaz çelik tencere ve mutfak eşyaları üretimi", "dondurma sektörü"],
         onemliYerler: ["Sütçü İmam Üniversitesi", "İstiklal Üniversitesi", "Yedikuyular Kayak Merkezi"],
         komsular: ["Gaziantep", "Adıyaman", "Malatya", "Sivas", "Kayseri", "Adana", "Osmaniye"]
     },
@@ -1684,9 +1692,10 @@ const ilEkstraBilgiler = {
         lezzet: ["satır kebabı", "Süryani çöreği", "mavi badem şekeri", "sembusek", "kaburga dolması"],
         mekan: ["tarihi taş konaklar", "Deyrulzafaran Manastırı", "Dara Antik Kenti", "Kasımiye Medresesi", "Zinciriye Medresesi"],
         unluler: ["Aziz Sancar", "Murathan Mungan", "Sermiyan Midyat"],
-        cografya: ["uçsuz bucaksız Mezopotamya Ovası manzarası", "Turabdin Platosu"],
-        ekonomi: ["telkâri gümüş işlemeciliği sanatı", "çimento ve un sanayisi", "fosfat gübre tesisleri", "inanç ve kültür turizmi"],
-        onemliYerler: ["Artuklu Üniversitesi", "Nusaybin Sınır Kapısı", "Suriye ile sınır komşuluğu"],
+        cografya: ["Mezopotamya Ovası", "Turabdin Platosu"],
+        ekonomi: ["telkâri gümüş işlemeciliği", "çimento ve un sanayisi", "fosfat gübre tesisleri", "inanç ve kültür turizmi"],
+        onemliYerler: ["Artuklu Üniversitesi", "Nusaybin Sınır Kapısı"],
+        sinir: ["Suriye"],
         komsular: ["Şanlıurfa", "Diyarbakır", "Batman", "Siirt", "Şırnak"]
     },
     "Muğla": {
@@ -1696,7 +1705,7 @@ const ilEkstraBilgiler = {
         mekan: ["Ölüdeniz Lagünü", "tarihi kale ve su altı müzesi", "Saklıkent Kanyonu", "Dalyan Kaunos Kaya Mezarları"],
         unluler: ["Zihni Derin", "Şahsenem", "Salih Güney"],
         cografya: ["Bafa Gölü kıyıları", "Babadağ", "Saklıkent Kanyonu", "Gökova Körfezi"],
-        ekonomi: ["çam balı üretiminde Türkiye lideri", "beyaz mermer ihracatı", "yat ve gulet tekne imalatı", "kıyı turizmi"],
+        ekonomi: ["çam balı üretimi", "beyaz mermer ihracatı", "yat ve gulet tekne imalatı", "kıyı turizmi"],
         onemliYerler: ["Sıtkı Koçman Üniversitesi", "Dalaman Havalimanı", "Milas-Bodrum Havalimanı", "Belcekız Plajı", "İztuzu Plajı"],
         komsular: ["Aydın", "Denizli", "Burdur", "Antalya"]
     },
@@ -1715,10 +1724,10 @@ const ilEkstraBilgiler = {
         plaka: "50",
         bolge: "İç Anadolu",
         lezzet: ["testi kebabı", "fırın tavası", "kuru üzüm", "kabak çekirdeği"],
-        mekan: ["Peri Bacaları", "sıcak hava balon turları", "Derinkuyu ve Kaymaklı Yeraltı Şehirleri", "Göreme Açık Hava Müzesi"],
+        mekan: ["Peri Bacaları", "Uçhisar Kalesi", "Derinkuyu ve Kaymaklı Yeraltı Şehirleri", "Göreme Açık Hava Müzesi"],
         unluler: ["Damat İbrahim Paşa", "Hacı Bektaş-ı Veli"],
         cografya: ["Kızılırmak Nehri vadisi", "Erdas Dağı"],
-        ekonomi: ["Kapadokya sıcak hava balonu turizmi", "kayadan oyma doğal soğuk hava depolarında patates ve narenciye saklama", "çömlekçilik", "şarapçılık"],
+        ekonomi: ["Kapadokya sıcak hava balonu turizmi", "kaya depolarında patates ve narenciye saklama", "çömlekçilik", "şarapçılık"],
         onemliYerler: ["Hacı Bektaş Veli Üniversitesi", "Kapadokya Havalimanı", "Hacıbektaş Külliyesi"],
         komsular: ["Kırşehir", "Yozgat", "Kayseri", "Niğde", "Aksaray"]
     },
@@ -1729,7 +1738,7 @@ const ilEkstraBilgiler = {
         mekan: ["Gümüşler Manastırı", "tarihi saat kulesi", "Tyana Antik Kenti Su Kemerleri", "Alaaddin Camii"],
         unluler: ["Ömer Halisdemir", "Emre Altuğ"],
         cografya: ["Aladağlar", "Bolkar Dağları", "Narlıgöl Krater Gölü"],
-        ekonomi: ["Türkiye'nin patates üretim üssü", "elma bahçeleri ve elma üretimi", "mikronize kalsit madenciliği"],
+        ekonomi: ["patates üretimi", "elma bahçeleri ve elma üretimi", "mikronize kalsit madenciliği"],
         onemliYerler: ["Ömer Halisdemir Üniversitesi", "Aladağlar Milli Parkı"],
         komsular: ["Kayseri", "Nevşehir", "Aksaray", "Konya", "Mersin", "Adana"]
     },
@@ -1739,8 +1748,8 @@ const ilEkstraBilgiler = {
         lezzet: ["yağlı tombul fındık", "kıymalı açık pide", "yanık fındık helvası", "melocan kavurması"],
         mekan: ["Boztepe Seyir Alanı", "Yason Burnu ve tarihi kilise", "Perşembe Yaylası Menderesleri", "Kurul Kalesi"],
         unluler: ["Kadir İnanır", "Soner Arıca", "Metin Aktaş"],
-        cografya: ["Melet Irmağı", "Canik Dağları", "Perşembe Yaylası doğa harikası kıvrımlı menderesleri"],
-        ekonomi: ["dünyada ve Türkiye'de fındık üretiminin en büyük merkezi", "bal ve arıcılık mamulleri", "kıyı balıkçılığı"],
+        cografya: ["Melet Irmağı", "Canik Dağları", "Perşembe Yaylası menderesleri"],
+        ekonomi: ["fındık üretimi", "bal ve arıcılık mamulleri", "kıyı balıkçılığı"],
         onemliYerler: ["Gülyalı Mavi Bayraklı Plajı", "Çambaşı Kayak Merkezi", "Karadeniz sahil şeridi"],
         komsular: ["Samsun", "Tokat", "Sivas", "Giresun"]
     },
@@ -1751,7 +1760,7 @@ const ilEkstraBilgiler = {
         mekan: ["tarihi Zilkale", "Fırtına Deresi Taş Kemer Köprüleri", "Palovit Şelalesi", "Pokut Yaylası"],
         unluler: ["Recep Tayyip Erdoğan", "Tarkan", "Davut Güloğlu", "Mesut Yılmaz"],
         cografya: ["Kaçkar Dağları Milli Parkı", "Fırtına Deresi", "buzul gölleri"],
-        ekonomi: ["Türkiye yaş çay üretiminin tek ve en büyük merkezi", "kivi yetiştiriciliği", "ahşap tekne yapımı"],
+        ekonomi: ["yaş çay üretimi", "kivi yetiştiriciliği", "ahşap tekne yapımı"],
         onemliYerler: ["Recep Tayyip Erdoğan Üniversitesi", "Ovit Tüneli", "Ayder Turizm Merkezi"],
         komsular: ["Trabzon", "Bayburt", "Erzurum", "Artvin"]
     },
@@ -1763,7 +1772,7 @@ const ilEkstraBilgiler = {
         unluler: ["Kenan Sofuoğlu", "Sait Faik Abasıyanık", "Uğur Dündar"],
         cografya: ["bölgenin büyük nehir deltası", "Sapanca Gölü", "Maden Deresi Kanyonu"],
         ekonomi: ["demiryolu taşıtları ve vagon üretimi", "otomotiv fabrikaları", "fındık tarımı", "dış mekan süs bitkiciliği"],
-        onemliYerler: ["kentin adını taşıyan Uygulamalı Bilimler Üniversitesi", "Karasu Karadeniz sahili plajları"],
+        onemliYerler: ["Uygulamalı Bilimler Üniversitesi", "Karasu Karadeniz sahili plajları"],
         komsular: ["Kocaeli", "Bursa", "Bilecik", "Bolu", "Düzce"]
     },
     "Samsun": {
@@ -1773,7 +1782,7 @@ const ilEkstraBilgiler = {
         mekan: ["Bandırma Vapuru Müzesi", "Atatürk Onur Anıtı", "Şahinkaya Kanyonu", "Amazon Kadınları Köyü"],
         unluler: ["Orhan Gencebay", "Ferhan Şensoy", "Mehmet Aslantuğ", "Ece Erken"],
         cografya: ["Kızılırmak Deltası Kuş Cenneti", "Yeşilırmak Deltası", "Canik Dağları"],
-        ekonomi: ["geniş ovalarda çeltik, sebze ve tütün üretimi", "cerrahi el aletleri imalatı", "un ve yem sanayisi"],
+        ekonomi: ["çeltik ve sebze üretimi", "tütün üretimi", "cerrahi el aletleri imalatı", "un ve yem sanayisi"],
         onemliYerler: ["Ondokuz Mayıs Üniversitesi", "Çarşamba Havalimanı", "Karadeniz Ticaret Limanı"],
         komsular: ["Sinop", "Çorum", "Amasya", "Tokat", "Ordu"]
     },
@@ -1784,7 +1793,7 @@ const ilEkstraBilgiler = {
         mekan: ["Veysel Karani Türbesi", "Tillo Işık Hadisesi Türbesi", "Rasıl Hacar Deliklitaş Kanyonu", "Ulu Camii"],
         unluler: ["Emine Erdoğan", "İbrahim Hakkı Hazretleri"],
         cografya: ["Botan Çayı Kanyonu", "Herekol Dağı"],
-        ekonomi: ["kırmızı altın iri kabuklu fıstık yetiştiriciliği", "el dokuması tiftik battaniyesi", "Zivzik narı", "bıttım sabunu üretimi"],
+        ekonomi: ["fıstık yetiştiriciliği", "el dokuması tiftik battaniyesi", "Zivzik narı", "bıttım sabunu üretimi"],
         onemliYerler: ["Tillo Bilim ve Kültür Merkezi", "Botan Vadisi Milli Parkı"],
         komsular: ["Batman", "Bitlis", "Van", "Şırnak", "Mardin"]
     },
@@ -1805,7 +1814,7 @@ const ilEkstraBilgiler = {
         lezzet: ["ızgara köfte", "katmer", "madımak otu yemeği", "peskütan çorbası"],
         mekan: ["Divriği Ulu Camii ve Darüşşifası", "Çifte Minareli Medrese", "Gök Medrese", "Buruciye Medresesi"],
         unluler: ["Aşık Veysel", "Muhsin Yazıcıoğlu", "Cem Yılmaz", "Hadise"],
-        cografya: ["Kızılırmak Nehri'nin doğduğu topraklar", "Tecer Dağları", "Gürün Gökpınar Akvaryum Gölü", "Hafik Gölü"],
+        cografya: ["Kızılırmak Nehri'nin kaynak bölgesi", "Tecer Dağları", "Gürün Gökpınar Akvaryum Gölü", "Hafik Gölü"],
         ekonomi: ["Kangal köpeği yetiştiriciliği", "demir cevheri ve linyit madenciliği", "çimento fabrikaları", "buğday üretimi"],
         onemliYerler: ["Cumhuriyet Üniversitesi", "Yıldız Dağı Kış Sporları Merkezi", "4 Eylül Stadyumu"],
         komsular: ["Yozgat", "Tokat", "Ordu", "Giresun", "Erzincan", "Malatya", "Kayseri"]
@@ -1817,7 +1826,7 @@ const ilEkstraBilgiler = {
         mekan: ["Namık Kemal Evi", "Rüstem Paşa Camii", "Rakoczi Müzesi", "Şarköy Bağ Rotası"],
         unluler: ["Namık Kemal", "Macar Prensi II. Ferenc Rakoczi"],
         cografya: ["Ganos Dağları", "Marmara Denizi sahili"],
-        ekonomi: ["ayçiçeği ve buğday tarımı", "un ve sıvı yağ entegre fabrikaları", "Çorlu ve Çerkezköy organize sanayi", "tekstil dev tesisleri"],
+        ekonomi: ["ayçiçeği ve buğday tarımı", "un ve sıvı yağ entegre fabrikaları", "Çorlu ve Çerkezköy organize sanayi", "büyük tekstil tesisleri"],
         onemliYerler: ["Namık Kemal Üniversitesi", "Kumbağ Mavi Bayraklı Plajı", "Şarköy sahili", "Asyaport Konteyner Limanı"],
         komsular: ["Edirne", "Kırklareli", "İstanbul", "Çanakkale"]
     },
@@ -1861,8 +1870,9 @@ const ilEkstraBilgiler = {
         mekan: ["Göbeklitepe", "Balıklıgöl", "Kümbet Konik Harran Evleri", "Karahantepe"],
         unluler: ["İbrahim Tatlıses", "Müslüm Gürses", "Ferhat Göçer", "Mahmut Tuncer"],
         cografya: ["Fırat Nehri", "Harran Ovası", "Suruç Ovası"],
-        ekonomi: ["GAP sulama sistemleriyle Türkiye'nin pamuk ve mısır deposu", "kuru kırmızı isot biberi", "Antep fıstığı üretimi"],
-        onemliYerler: ["Harran Üniversitesi", "Akçakale Gümrük Kapısı", "Suriye ile sınır komşuluğu", "11 Nisan Stadyumu"],
+        ekonomi: ["GAP sulamasıyla pamuk ve mısır tarımı", "kuru kırmızı isot biberi", "Antep fıstığı üretimi"],
+        onemliYerler: ["Harran Üniversitesi", "Akçakale Gümrük Kapısı", "11 Nisan Stadyumu"],
+        sinir: ["Suriye"],
         komsular: ["Gaziantep", "Adıyaman", "Diyarbakır", "Mardin"]
     },
     "Uşak": {
@@ -1880,21 +1890,22 @@ const ilEkstraBilgiler = {
         plaka: "65",
         bolge: "Doğu Anadolu",
         lezzet: ["zengin serpme kahvaltı", "otlu peynir", "tandırda pişmiş inci kefali", "keledoş", "murtuğa"],
-        mekan: ["Akdamar Kilisesi ve Adası", "kedi evi ve kalesi", "Muradiye Şelalesi"],
+        mekan: ["Akdamar Kilisesi ve Adası", "kedi evi ve tarihi kale", "Muradiye Şelalesi"],
         unluler: ["Ruhi Su", "Fuzuli Dönmez"],
-        cografya: ["bölgenin dev sodalı gölünün doğu kıyıları", "Süphan Dağı ve Artos Dağı manzaraları", "Bendimahi Çayı"],
+        cografya: ["bölgenin dev sodalı gölünün doğu kıyıları", "Süphan Dağı ve Artos Dağı", "Bendimahi Çayı"],
         ekonomi: ["küçükbaş mera yetiştiriciliği", "inci kefali göç balıkçılığı", "İran transit sınır ticareti", "traverten mermer işletmeciliği"],
-        onemliYerler: ["Yüzüncü Yıl Üniversitesi", "Kapıköy Demiryolu ve Gümrük Kapısı", "İran ile sınır komşuluğu", "Akdamar İskelesi Plajı"],
+        onemliYerler: ["Yüzüncü Yıl Üniversitesi", "Kapıköy Demiryolu ve Gümrük Kapısı", "Akdamar İskelesi Plajı"],
+        sinir: ["İran"],
         komsular: ["Ağrı", "Bitlis", "Siirt", "Şırnak", "Hakkâri"]
     },
     "Yozgat": {
         plaka: "66",
         bolge: "İç Anadolu",
         lezzet: ["toprak testi kebabı", "arabaşı çorbası ve hamuru", "madımak", "parmak çörek"],
-        mekan: ["milli parkı", "tarihi saat kulesi", "Basilika Therma", "Çapanoğlu Camii"],
+        mekan: ["Çamlık Milli Parkı", "tarihi saat kulesi", "Basilika Therma", "Çapanoğlu Camii"],
         unluler: ["Cemil Çiçek", "Bekir Bozdağ", "Celal Atik"],
         cografya: ["Delice Çayı vadisi", "Çamlık çam ormanları platosu"],
-        ekonomi: ["yeşil mercimek ve nohut üretiminde Türkiye öncüsü", "buğday tarımı", "şeker fabrikası", "çimento sanayisi"],
+        ekonomi: ["yeşil mercimek ve nohut üretimi", "buğday tarımı", "şeker fabrikası", "çimento sanayisi"],
         onemliYerler: ["Bozok Üniversitesi", "tarihi Roma Hamamı"],
         komsular: ["Çorum", "Amasya", "Tokat", "Sivas", "Kayseri", "Nevşehir", "Kırşehir", "Kırıkkale"]
     },
@@ -1905,7 +1916,7 @@ const ilEkstraBilgiler = {
         mekan: ["Türkiye Madencilik Müzesi ve Eğitim Kömür Ocağı", "Gökgöl Mağarası", "Filyos Kalesi ve Antik Kenti", "Varagel Tüneli"],
         unluler: ["Murat Boz", "Köksal Toptan", "Ergün Penbe"],
         cografya: ["Filyos Çayı vadisi", "Karadeniz dik kıyı falezleri"],
-        ekonomi: ["taş kömürü madenciliği", "ağır demir-çelik sanayisi", "termik enerji santralleri", "Filyos Liman Projesi"],
+        ekonomi: ["taş kömürü madenciliği", "ağır demir-çelik sanayisi", "termik enerji santralleri", "Filyos Limanı"],
         onemliYerler: ["Bülent Ecevit Üniversitesi", "Filyos Limanı", "Türkali ve Ilıksu plajları"],
         komsular: ["Bartın", "Karabük", "Bolu", "Düzce"]
     },
@@ -1916,7 +1927,7 @@ const ilEkstraBilgiler = {
         mekan: ["Sultanhanı Kervansarayı", "Somuncu Baba Külliyesi", "Eğri Minare"],
         unluler: ["Piri Mehmet Paşa", "Şeyh Hamid-i Veli"],
         cografya: ["Hasan Dağı", "Melendiz Çayı Kanyonu", "Tuz Gölü güneydoğu kıyıları"],
-        ekonomi: ["Mercedes-Benz Kamyon ve Ağır Vasıta fabrikası", "süt tozu ve kaşar süt entegre tesisleri", "buğday ve şeker pancarı tarımı"],
+        ekonomi: ["kamyon ve ağır vasıta üretimi", "süt ürünleri tesisleri", "buğday ve şeker pancarı tarımı"],
         onemliYerler: ["Ihlara Vadisi Ören Yeri"],
         komsular: ["Ankara", "Kırşehir", "Nevşehir", "Niğde", "Konya"]
     },
@@ -1938,7 +1949,7 @@ const ilEkstraBilgiler = {
         mekan: ["Yunus Emre Türbesi ve Camii", "Manazan Kaya Mağara Şehri", "Hatuniye Medresesi"],
         unluler: ["Yunus Emre", "Mehmet Bey"],
         cografya: ["Karadağ", "Göksu Nehri kanyonları"],
-        ekonomi: ["bisküvi, çikolata, kek ve gofret fabrikaları", "elma bahçeleri", "bulgur sanayisi"],
+        ekonomi: ["bisküvi ve çikolata fabrikaları", "kek ve gofret üretimi", "elma bahçeleri", "bulgur sanayisi"],
         onemliYerler: ["İncesu Tabiat Parkı"],
         komsular: ["Konya", "Mersin", "Antalya"]
     },
@@ -1949,7 +1960,7 @@ const ilEkstraBilgiler = {
         mekan: ["Çeşnigir Köprüsü ve Kanyonu", "MKE Silah Sanayii Müzesi", "Sulu Mağara", "tarihi Taş Mektep"],
         unluler: ["Hacı Taşan", "Erkan Petekkaya"],
         cografya: ["Kızılırmak vadisi", "Dinek Dağı"],
-        ekonomi: ["cumhuriyetin savunma ve mühimmat sanayisi merkezi", "Orta Anadolu Petrol Rafinerisi"],
+        ekonomi: ["savunma ve mühimmat sanayisi", "Orta Anadolu Petrol Rafinerisi"],
         onemliYerler: ["Çeşnigir Seyir Terası"],
         komsular: ["Ankara", "Çankırı", "Çorum", "Yozgat", "Kırşehir"]
     },
@@ -1957,10 +1968,10 @@ const ilEkstraBilgiler = {
         plaka: "72",
         bolge: "Güneydoğu Anadolu",
         lezzet: ["fırın tavası", "Şam böreği", "perde pilavı", "kütülk"],
-        mekan: ["Hasankeyf Antik Kenti", "Zeynel Bey Türbesi", "tarihi Malabadi Köprüsü yakınları"],
+        mekan: ["Hasankeyf Antik Kenti", "Zeynel Bey Türbesi", "tarihi Malabadi Köprüsü"],
         unluler: ["Ahmet Güneştekin", "Ciwan Haco"],
         cografya: ["Dicle Nehri vadisi", "Ilısu Baraj Gölü", "Raman Dağı"],
-        ekonomi: ["Türkiye'nin ilk petrol kuyularının bulunduğu sahalar", "ilk petrol rafinerisi", "tekstil konfeksiyon atölyeleri"],
+        ekonomi: ["petrol sahaları", "Türkiye'nin ilk petrol rafinerisi", "tekstil konfeksiyon atölyeleri"],
         onemliYerler: ["Hasankeyf Arkeopark Müzesi"],
         komsular: ["Muş", "Bitlis", "Siirt", "Mardin", "Diyarbakır"]
     },
@@ -1971,8 +1982,9 @@ const ilEkstraBilgiler = {
         mekan: ["Kasrik Boğazı Doğal Su Geçidi", "Kırmızı Medrese", "Nuh Peygamber Camii ve Türbesi", "Mir Kalesi"],
         unluler: ["İsmail Ebul-İz El Cezeri"],
         cografya: ["Cudi Dağı", "Dicle Nehri vadisi", "Habur Çayı"],
-        ekonomi: ["asfaltit madenciliği ve kömür rezervleri", "Türkiye'nin en işlek sınır kapısı üzerinden Ortadoğu lojistik ticareti"],
-        onemliYerler: ["Habur Sınır Kapısı", "Irak ve Suriye ile sınır komşuluğu", "Şerafettin Elçi Havalimanı"],
+        ekonomi: ["asfaltit madenciliği ve kömür rezervleri", "Orta Doğu ile sınır ticareti"],
+        onemliYerler: ["Habur Sınır Kapısı", "Şerafettin Elçi Havalimanı"],
+        sinir: ["Irak", "Suriye"],
         komsular: ["Siirt", "Van", "Hakkâri", "Mardin"]
     },
     "Bartın": {
@@ -1981,7 +1993,7 @@ const ilEkstraBilgiler = {
         lezzet: ["Amasra çoban salatası", "taze tava mezgit", "pumpum çorbası", "pirinçli mantı"],
         mekan: ["tarihi Amasra Kemere Taş Köprü", "Çekiciler Ahşap Oyma Çarşısı", "Kuşkayası Yol Anıtı"],
         unluler: ["Barış Akarsu"],
-        cografya: ["Küre Dağları Milli Parkı", "denizden içeriye 15 km boyunca üzerinde büyük teknelerin yüzebildiği akarsu"],
+        cografya: ["Küre Dağları Milli Parkı", "denizden 15 km içeriye gemilerin girebildiği akarsu"],
         ekonomi: ["Amasra ve çevresi taş kömürü maden ocakları", "çimento fabrikası", "şimşir ve ıhlamur ahşap el oymacılığı", "tel kırma işlemeciliği"],
         onemliYerler: ["İnkumu Mavi Bayraklı Plajı", "Çakraz sahili", "Amasra Küçük Liman"],
         komsular: ["Zonguldak", "Karabük", "Kastamonu"]
@@ -1993,8 +2005,9 @@ const ilEkstraBilgiler = {
         mekan: ["kışın buz tutan Çıldır Gölü", "Şeytan Kalesi", "tarihi taş kale"],
         unluler: ["Hülya Avşar", "Ensar Öğüt"],
         cografya: ["Kura Nehri", "Yalnızçam Sıradağları", "Çıldır Gölü"],
-        ekonomi: ["geniş meralarda büyükbaş süt hayvancılığı", "kaşar peyniri imalatı", "Kafkas arı ırkı bal üretimi", "kış turizmi"],
-        onemliYerler: ["Türkgözü Sınır Kapısı", "Çıldır-Aktaş Sınır Kapısı", "Gürcistan ile sınır komşuluğu", "Yalnızçam Kayak Merkezi"],
+        ekonomi: ["büyükbaş süt hayvancılığı", "kaşar peyniri imalatı", "Kafkas arı ırkı bal üretimi", "kış turizmi"],
+        onemliYerler: ["Türkgözü Sınır Kapısı", "Çıldır-Aktaş Sınır Kapısı", "Yalnızçam Kayak Merkezi"],
+        sinir: ["Gürcistan"],
         komsular: ["Artvin", "Erzurum", "Kars"]
     },
     "Iğdır": {
@@ -2004,8 +2017,9 @@ const ilEkstraBilgiler = {
         mekan: ["Tuzluca Doğal Tuz Mağaraları", "tarihi Selçuklu Kervansarayı", "Karakale Harabeleri"],
         unluler: ["Servet Kocakaya"],
         cografya: ["Aras Nehri bereketli havzası", "5137 m zirvenin kuzey etekleri"],
-        ekonomi: ["mikroklima iklim sayesinde pamuk, kayısı, karpuz ve şeftali tarımı", "uluslararası sınır ticareti", "nakliyat"],
-        onemliYerler: ["Dilucu Sınır Kapısı", "Azerbaycan, Ermenistan ve İran ile sınır komşuluğu"],
+        ekonomi: ["pamuk ve kayısı tarımı", "karpuz ve şeftali tarımı", "uluslararası sınır ticareti", "nakliyat"],
+        onemliYerler: ["Dilucu Sınır Kapısı"],
+        sinir: ["Azerbaycan", "Ermenistan", "İran"],
         komsular: ["Kars", "Ağrı"]
     },
     "Yalova": {
@@ -2015,7 +2029,7 @@ const ilEkstraBilgiler = {
         mekan: ["Yürüyen Köşk", "Karaca Arboretumu"],
         unluler: ["Muharrem İnce", "Halil İnalcık"],
         cografya: ["Samanlı Dağları", "Sudüşen Şelalesi", "Dipsiz Göl", "Marmara Denizi sahili"],
-        ekonomi: ["Türkiye'nin kesme çiçek ve süs bitkiciliği üretim merkezi", "Altınova tersaneleri ve modern gemi inşa sanayisi", "kimyasal elyaf sanayisi"],
+        ekonomi: ["kesme çiçek ve süs bitkiciliği", "Altınova tersaneleri ve modern gemi inşa sanayisi", "kimyasal elyaf sanayisi"],
         onemliYerler: ["tarihi Termal Kaplıcaları", "Çınarcık ve Armutlu plajları", "İDO Deniz Otobüsü İskelesi"],
         komsular: ["Kocaeli", "Bursa"]
     },
@@ -2026,7 +2040,7 @@ const ilEkstraBilgiler = {
         mekan: ["Safranbolu tarihi evleri", "Bulak Mencilis Mağarası", "tarihi İncekaya Su Kemeri"],
         unluler: ["Hidayet Türkoğlu"],
         cografya: ["Yenice Ormanları", "Tokatlı Kanyonu"],
-        ekonomi: ["Türkiye'nin ilk ağır demir-çelik entegre tesisi", "safran bitkisi tarımı", "ahşap koruma turizmi"],
+        ekonomi: ["Türkiye'nin ilk ağır demir-çelik entegre tesisi", "safran bitkisi tarımı", "kültür turizmi"],
         onemliYerler: ["Kristal Cam Seyir Terası"],
         komsular: ["Bartın", "Kastamonu", "Çankırı", "Bolu", "Zonguldak"]
     },
@@ -2038,7 +2052,8 @@ const ilEkstraBilgiler = {
         unluler: ["Hıncal Uluç", "Doğan Güreş"],
         cografya: ["Afrin Çayı vadisi", "Kurtbaba Dağı"],
         ekonomi: ["yağlık zeytin ve zeytinyağı üretimi", "Horoz karası üzüm bağcılığı", "sınır ticareti"],
-        onemliYerler: ["Öncüpınar Sınır Kapısı", "Çobanbey Sınır Kapısı", "7 Aralık Üniversitesi", "Suriye ile sınır komşuluğu"],
+        onemliYerler: ["Öncüpınar Sınır Kapısı", "Çobanbey Sınır Kapısı", "7 Aralık Üniversitesi"],
+        sinir: ["Suriye"],
         komsular: ["Gaziantep"]
     },
     "Osmaniye": {
@@ -2048,7 +2063,7 @@ const ilEkstraBilgiler = {
         mekan: ["Karatepe-Aslantaş Açık Hava Müzesi", "Kastabala Antik Kenti", "Toprakkale Kalesi", "Zorkun Yaylası"],
         unluler: ["Devlet Bahçeli", "Yaşar Kemal"],
         cografya: ["Ceyhan Nehri havzası", "Amanos Dağları batı etekleri", "Çukurova'nın doğu ucu"],
-        ekonomi: ["Türkiye yer fıstığı üretim ve işleme başkenti", "demir-çelik haddehaneleri ve organize sanayi üretimi", "zeytincilik"],
+        ekonomi: ["yer fıstığı üretimi ve işlenmesi", "demir-çelik haddehaneleri ve organize sanayi üretimi", "zeytincilik"],
         onemliYerler: ["Korkut Ata Üniversitesi"],
         komsular: ["Adana", "Hatay", "Gaziantep", "Kahramanmaraş"]
     },

@@ -1553,8 +1553,12 @@ function formatList(items, max = 3) {
         ? shuffleArray([...items.keys()]).slice(0, max).sort((a, b) => a - b).map(i => items[i])
         : [...items];
     if (list.length < 2) return list[0];
+    const hasVe = s => s.includes(' ve ');
+    // Seçilenlerin hepsinde "ve" varsa, mümkünse biri "ve"siz bir öğeyle değiştirilir (son bağlaç net kalsın)
+    const plain = items.filter(s => !hasVe(s));
+    if (list.every(hasVe) && plain.length) list[list.length - 1] = pick(plain);
     // İçinde "ve" geçen öğe sona düşerse "B ve kimya ve plastik sektörü" gibi belirsizlik olur; başa alınır
-    list.sort((a, b) => b.includes(' ve ') - a.includes(' ve '));
+    list.sort((a, b) => hasVe(b) - hasVe(a));
     // Öğe içinde virgül ya da kaçınılmaz "ve" belirsizliği varsa öğeler noktalı virgülle ayrılır
     if (list.some(s => s.includes(',')) || list[list.length - 1].includes(' ve ')) return list.join('; ');
     return `${list.slice(0, -1).join(', ')} ve ${list[list.length - 1]}`;
@@ -1565,70 +1569,79 @@ function describe(items, templates) {
     return items && items.length ? pick(templates)(formatList(items)) : '';
 }
 
+// Kalıplar her öğe türüne (yer, ürün, faaliyet, tek ya da çok öğe) uyacak şekilde genel tutulur
 const INFO_TEMPLATES = {
     lezzet: [
         x => `${capitalize(x)} ile tanınır.`,
-        x => `Mutfağında ${x} öne çıkar.`,
+        x => `Yöresel lezzetleri arasında ${x} öne çıkar.`,
         x => `${capitalize(x)} denince akla bu kent gelir.`
     ],
     unluler: [
-        x => `${capitalize(x)} bu kentin yetiştirdiği önemli isimler arasındadır.`,
+        x => `${capitalize(x)} bu kentin yetiştirdiği tanınmış isimler arasındadır.`,
         x => `Ayrıca ${x} bu şehirden çıkmıştır.`,
         x => `Kentin tanınmış isimleri arasında ${x} sayılabilir.`
     ],
     mekan: [
-        x => `${capitalize(x)} kentin önemli mekanları arasındadır.`,
+        x => `${capitalize(x)} kentin görülmeye değer yerleri arasındadır.`,
         x => `Gezilecek yerler arasında ${x} öne çıkar.`,
-        x => `${capitalize(x)} kentin görülmeye değer yerlerindendir.`
+        x => `Kentin tarihi ve turistik yerleri arasında ${x} sayılabilir.`
     ],
     onemliYerler: [
-        x => `${capitalize(x)} kentin öne çıkan noktaları arasındadır.`,
-        x => `Kentte ${x} gibi önemli noktalar bulunur.`,
-        x => `${capitalize(x)} bu kentte yer alır.`
+        x => `${capitalize(x)} kentin öne çıkan yerleri arasındadır.`,
+        x => `Kentte ${x} gibi önemli yerler bulunur.`,
+        x => `Kentin önemli yerleri arasında ${x} sayılabilir.`
+    ],
+    sinir: [
+        x => `${capitalize(x)} ile sınır komşusudur.`,
+        x => `${capitalize(x)} ile sınırı bulunur.`
     ],
     cografya: [
         x => `${capitalize(x)} gibi önemli coğrafi değerlere sahiptir.`,
         x => `Coğrafyasında ${x} öne çıkar.`,
-        x => `${capitalize(x)} kentin doğal güzellikleri arasındadır.`
+        x => `Kentin coğrafyasında ${x} önemli yer tutar.`
     ],
     ekonomi: [
-        x => `${capitalize(x)} ise kentin ekonomik gücünü oluşturur.`,
-        x => `Ekonomisinde ${x} önemli yer tutar.`,
-        x => `${capitalize(x)} kent ekonomisinin başlıca kaynakları arasındadır.`
+        x => `Ekonomisinde ${x} öne çıkar.`,
+        x => `${capitalize(x)} kent ekonomisinde önemli yer tutar.`,
+        x => `${capitalize(x)} kent ekonomisine yön verir.`
     ]
 };
 
 // İpucu metinleri ili ele vermemek için "bu il" der
 const HINT_TEMPLATES = {
     unluler: [
-        x => `<strong>${capitalize(x)}</strong> bu ilden çıkmış önemli isimlerdir.`,
-        x => `Bu ilin yetiştirdiği isimler arasında <strong>${x}</strong> sayılabilir.`,
-        x => `<strong>${capitalize(x)}</strong> bu ilin tanınmış isimleri arasındadır.`
+        x => `<strong>${capitalize(x)}</strong> bu ilin yetiştirdiği tanınmış isimler arasındadır.`,
+        x => `Bu ilin tanınmış isimleri arasında <strong>${x}</strong> sayılabilir.`,
+        x => `<strong>${capitalize(x)}</strong> bu ilden çıkmıştır.`
     ],
     cografya: [
-        x => `<strong>${capitalize(x)}</strong> öne çıkan coğrafi değerlerdir.`,
+        x => `<strong>${capitalize(x)}</strong> bu ilin önemli coğrafi değerleri arasındadır.`,
         x => `Bu ilin coğrafyasında <strong>${x}</strong> öne çıkar.`,
-        x => `<strong>${capitalize(x)}</strong> bu ilin doğal güzellikleri arasındadır.`
+        x => `Bu ilin coğrafyasında <strong>${x}</strong> önemli yer tutar.`
     ],
     ekonomi: [
-        x => `<strong>${capitalize(x)}</strong> kentin ekonomik yapısını oluşturur.`,
-        x => `Bu ilin ekonomisinde <strong>${x}</strong> önemli yer tutar.`,
-        x => `<strong>${capitalize(x)}</strong> bu ilin başlıca geçim kaynakları arasındadır.`
+        x => `Bu ilin ekonomisinde <strong>${x}</strong> öne çıkar.`,
+        x => `<strong>${capitalize(x)}</strong> bu ilin ekonomisinde önemli yer tutar.`,
+        x => `<strong>${capitalize(x)}</strong> bu ilin ekonomisine yön verir.`
     ],
     onemliYerler: [
-        x => `<strong>${capitalize(x)}</strong> bu ilde bulunan önemli yerlerdir.`,
-        x => `Bu ilde <strong>${x}</strong> gibi önemli noktalar bulunur.`,
-        x => `<strong>${capitalize(x)}</strong> bu ilin öne çıkan noktaları arasındadır.`
+        x => `<strong>${capitalize(x)}</strong> bu ilde bulunur.`,
+        x => `Bu ilde <strong>${x}</strong> gibi önemli yerler bulunur.`,
+        x => `Bu ilin önemli yerleri arasında <strong>${x}</strong> sayılabilir.`
+    ],
+    sinir: [
+        x => `Bu il <strong>${x}</strong> ile sınır komşusudur.`,
+        x => `Bu ilin <strong>${x}</strong> ile sınırı bulunur.`
     ],
     lezzet: [
-        x => `<strong>${capitalize(x)}</strong> bu ilin meşhur ürünleridir.`,
-        x => `Bu ilin mutfağında <strong>${x}</strong> öne çıkar.`,
+        x => `<strong>${capitalize(x)}</strong> bu ilin meşhur lezzetleri arasındadır.`,
+        x => `Bu ilin yöresel lezzetleri arasında <strong>${x}</strong> öne çıkar.`,
         x => `<strong>${capitalize(x)}</strong> denince akla bu il gelir.`
     ],
     mekan: [
         x => `<strong>${capitalize(x)}</strong> bu ilde yer alır.`,
         x => `Bu ilde <strong>${x}</strong> görülmeye değer.`,
-        x => `<strong>${capitalize(x)}</strong> bu ilin tarihi ve turistik mekanları arasındadır.`
+        x => `Bu ilin gezilecek yerleri arasında <strong>${x}</strong> öne çıkar.`
     ]
 };
 
@@ -1642,7 +1655,7 @@ function showDistrictInfo(city, district) {
     }
     infoText += '</p>';
     if (meta) {
-        const sentences = ['lezzet', 'unluler', 'mekan', 'onemliYerler', 'cografya', 'ekonomi']
+        const sentences = ['lezzet', 'unluler', 'mekan', 'onemliYerler', 'sinir', 'cografya', 'ekonomi']
             .map(key => describe(meta[key], INFO_TEMPLATES[key]))
             .filter(Boolean);
         infoText += `<p><strong>${city}</strong> ise, ${meta.bolge} Bölgesi'nde yer alır ve ${meta.plaka} plaka numarasına sahiptir. ${sentences.join(' ')}</p>`;
@@ -1792,6 +1805,16 @@ document.getElementById('joker-hint').onclick = function () {
             icon: SVG_ICONS.pin,
             title: 'Komşu İller',
             desc: `<strong>${shuffleArray([...meta.komsular]).slice(0, 3).join('</strong>, <strong>').replace(/, ([^,]*)$/, ' ve $1')}</strong> bu ilin komşu illerindendir.`
+        });
+    }
+
+    // 10. Sınır Komşusu Ülkeler
+    if (meta.sinir) {
+        availableClues.push({
+            type: 'sinir',
+            icon: SVG_ICONS.compass,
+            title: 'Sınır Komşuluğu',
+            desc: describe(meta.sinir, HINT_TEMPLATES.sinir)
         });
     }
 
