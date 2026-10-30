@@ -1543,16 +1543,109 @@ function checkAnswer(selectedCity, correctCity, ilce, clickedBtn) {
     }
 }
 
+/* Bilgi Notu ve İpucu metinleri: her gösterimde farklı kalıp ve en fazla 3 rastgele öğe */
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+const capitalize = s => s.charAt(0).toLocaleUpperCase('tr') + s.slice(1);
+
+// ["A", "B", "C", "D"] → ör. "A, C ve D" (öğeler veri setindeki sırasını korur)
+function formatList(items, max = 3) {
+    const list = items.length > max
+        ? shuffleArray([...items.keys()]).slice(0, max).sort((a, b) => a - b).map(i => items[i])
+        : [...items];
+    if (list.length < 2) return list[0];
+    // İçinde "ve" geçen öğe sona düşerse "B ve kimya ve plastik sektörü" gibi belirsizlik olur; başa alınır
+    list.sort((a, b) => b.includes(' ve ') - a.includes(' ve '));
+    // Öğe içinde virgül ya da kaçınılmaz "ve" belirsizliği varsa öğeler noktalı virgülle ayrılır
+    if (list.some(s => s.includes(',')) || list[list.length - 1].includes(' ve ')) return list.join('; ');
+    return `${list.slice(0, -1).join(', ')} ve ${list[list.length - 1]}`;
+}
+
+// Alan boşsa cümle atlanır; kalıplar cümle başındaki öğeyi büyük harfle yazar
+function describe(items, templates) {
+    return items && items.length ? pick(templates)(formatList(items)) : '';
+}
+
+const INFO_TEMPLATES = {
+    lezzet: [
+        x => `${capitalize(x)} ile tanınır.`,
+        x => `Mutfağında ${x} öne çıkar.`,
+        x => `${capitalize(x)} denince akla bu kent gelir.`
+    ],
+    unluler: [
+        x => `${capitalize(x)} bu kentin yetiştirdiği önemli isimler arasındadır.`,
+        x => `Ayrıca ${x} bu şehirden çıkmıştır.`,
+        x => `Kentin tanınmış isimleri arasında ${x} sayılabilir.`
+    ],
+    mekan: [
+        x => `${capitalize(x)} kentin önemli mekanları arasındadır.`,
+        x => `Gezilecek yerler arasında ${x} öne çıkar.`,
+        x => `${capitalize(x)} kentin görülmeye değer yerlerindendir.`
+    ],
+    onemliYerler: [
+        x => `${capitalize(x)} kentin öne çıkan noktaları arasındadır.`,
+        x => `Kentte ${x} gibi önemli noktalar bulunur.`,
+        x => `${capitalize(x)} bu kentte yer alır.`
+    ],
+    cografya: [
+        x => `${capitalize(x)} gibi önemli coğrafi değerlere sahiptir.`,
+        x => `Coğrafyasında ${x} öne çıkar.`,
+        x => `${capitalize(x)} kentin doğal güzellikleri arasındadır.`
+    ],
+    ekonomi: [
+        x => `${capitalize(x)} ise kentin ekonomik gücünü oluşturur.`,
+        x => `Ekonomisinde ${x} önemli yer tutar.`,
+        x => `${capitalize(x)} kent ekonomisinin başlıca kaynakları arasındadır.`
+    ]
+};
+
+// İpucu metinleri ili ele vermemek için "bu il" der
+const HINT_TEMPLATES = {
+    unluler: [
+        x => `<strong>${capitalize(x)}</strong> bu ilden çıkmış önemli isimlerdir.`,
+        x => `Bu ilin yetiştirdiği isimler arasında <strong>${x}</strong> sayılabilir.`,
+        x => `<strong>${capitalize(x)}</strong> bu ilin tanınmış isimleri arasındadır.`
+    ],
+    cografya: [
+        x => `<strong>${capitalize(x)}</strong> öne çıkan coğrafi değerlerdir.`,
+        x => `Bu ilin coğrafyasında <strong>${x}</strong> öne çıkar.`,
+        x => `<strong>${capitalize(x)}</strong> bu ilin doğal güzellikleri arasındadır.`
+    ],
+    ekonomi: [
+        x => `<strong>${capitalize(x)}</strong> kentin ekonomik yapısını oluşturur.`,
+        x => `Bu ilin ekonomisinde <strong>${x}</strong> önemli yer tutar.`,
+        x => `<strong>${capitalize(x)}</strong> bu ilin başlıca geçim kaynakları arasındadır.`
+    ],
+    onemliYerler: [
+        x => `<strong>${capitalize(x)}</strong> bu ilde bulunan önemli yerlerdir.`,
+        x => `Bu ilde <strong>${x}</strong> gibi önemli noktalar bulunur.`,
+        x => `<strong>${capitalize(x)}</strong> bu ilin öne çıkan noktaları arasındadır.`
+    ],
+    lezzet: [
+        x => `<strong>${capitalize(x)}</strong> bu ilin meşhur ürünleridir.`,
+        x => `Bu ilin mutfağında <strong>${x}</strong> öne çıkar.`,
+        x => `<strong>${capitalize(x)}</strong> denince akla bu il gelir.`
+    ],
+    mekan: [
+        x => `<strong>${capitalize(x)}</strong> bu ilde yer alır.`,
+        x => `Bu ilde <strong>${x}</strong> görülmeye değer.`,
+        x => `<strong>${capitalize(x)}</strong> bu ilin tarihi ve turistik mekanları arasındadır.`
+    ]
+};
+
 function showDistrictInfo(city, district) {
     const districtInfoDiv = document.getElementById('district-info');
     const meta = ilEkstraBilgiler[city];
     let infoText = `<p class="info-card-district"><strong>${district}</strong> ilçesi, ${city} iline bağlıdır.`;
 
     if (ilceBilgileri && ilceBilgileri[city] && ilceBilgileri[city][district]) {
-        infoText += ` ${ilceBilgileri[city][district]}</p>`;
+        infoText += ` ${ilceBilgileri[city][district]}`;
     }
+    infoText += '</p>';
     if (meta) {
-        infoText += `<p><strong>${city}</strong> ise, ${meta.bolge} Bölgesi'nde yer alır ve ${meta.plaka} plaka numarasına sahiptir. ${meta.lezzet} ile tanınır. Ayrıca ${meta.unluler} bu kentten çıkan önemli isimlerdir. ${meta.mekan} ile ${meta.onemliYerler} kentin önemli mekanlarıdır. ${meta.cografya} gibi önemli coğrafi değerlere sahiptir. ${meta.ekonomi} ise kentin ekonomik gücünü oluşturur.</p>`;
+        const sentences = ['lezzet', 'unluler', 'mekan', 'onemliYerler', 'cografya', 'ekonomi']
+            .map(key => describe(meta[key], INFO_TEMPLATES[key]))
+            .filter(Boolean);
+        infoText += `<p><strong>${city}</strong> ise, ${meta.bolge} Bölgesi'nde yer alır ve ${meta.plaka} plaka numarasına sahiptir. ${sentences.join(' ')}</p>`;
     }
 
     districtInfoDiv.innerHTML = `
@@ -1618,7 +1711,7 @@ document.getElementById('joker-hint').onclick = function () {
             type: 'unluler',
             icon: SVG_ICONS.user,
             title: 'Tanınmış İsimler',
-            desc: `<strong>${meta.unluler}</strong> bu ilden çıkmış önemli isimlerdir.`
+            desc: describe(meta.unluler, HINT_TEMPLATES.unluler)
         });
     }
 
@@ -1628,7 +1721,7 @@ document.getElementById('joker-hint').onclick = function () {
             type: 'cografya',
             icon: SVG_ICONS.mountain,
             title: 'Önemli Coğrafi Değerler',
-            desc: `<strong>${meta.cografya}</strong> öne çıkan coğrafi değerlerdir.`
+            desc: describe(meta.cografya, HINT_TEMPLATES.cografya)
         });
     }
 
@@ -1638,7 +1731,7 @@ document.getElementById('joker-hint').onclick = function () {
             type: 'ekonomi',
             icon: SVG_ICONS.factory,
             title: 'Maden, Tarım ve Sanayi',
-            desc: `<strong>${meta.ekonomi}</strong> kentin ekonomik yapısını oluşturur.`
+            desc: describe(meta.ekonomi, HINT_TEMPLATES.ekonomi)
         });
     }
 
@@ -1648,7 +1741,7 @@ document.getElementById('joker-hint').onclick = function () {
             type: 'onemliYerler',
             icon: SVG_ICONS.star,
             title: 'Önemli Noktalar & Tesisler',
-            desc: `<strong>${meta.onemliYerler}</strong> bu ilde bulunan önemli yerlerdir.`
+            desc: describe(meta.onemliYerler, HINT_TEMPLATES.onemliYerler)
         });
     }
 
@@ -1658,7 +1751,7 @@ document.getElementById('joker-hint').onclick = function () {
             type: 'lezzet',
             icon: SVG_ICONS.food,
             title: 'Meşhur Lezzet',
-            desc: `<strong>${meta.lezzet}</strong> bu ilin meşhur ürünleridir.`
+            desc: describe(meta.lezzet, HINT_TEMPLATES.lezzet)
         });
     }
 
@@ -1668,7 +1761,7 @@ document.getElementById('joker-hint').onclick = function () {
             type: 'mekan',
             icon: SVG_ICONS.landmark,
             title: 'Tarihi / Turistik Mekan',
-            desc: `<strong>${meta.mekan}</strong> bu ilde yer alır.`
+            desc: describe(meta.mekan, HINT_TEMPLATES.mekan)
         });
     }
 
@@ -2762,9 +2855,11 @@ document.getElementById('install-banner-btn').onclick = () => {
 document.getElementById('install-banner-close').onclick = hideInstallBanner;
 
 function initApp() {
-    // Paylaşılan bağlantı (?mod=gunluk) doğrudan Günün Bilmecesi'ni açar
+    // Paylaşılan bağlantı (?mod=gunluk) ya da bugün bitirilmemiş bulmaca Günün Bilmecesi'ni açar
     const params = new URLSearchParams(window.location.search);
-    prepareGame(params.get('mod') === 'gunluk' ? 'daily' : 'classic');
+    const today = loadDailyState(getDailyNumber());
+    const dailyPending = !(today && today.finished);
+    prepareGame(params.get('mod') === 'gunluk' || dailyPending ? 'daily' : 'classic');
     // Chromium'un yükleme olayı (beforeinstallprompt) genelde ilk saniyelerde gelir; öneri biraz beklenip gösterilir
     scheduleInstallPrompt('entry');
 }
