@@ -114,7 +114,18 @@ Veri setine ilçe eklerken veya bir ilçenin adını değiştirirken ilgili hari
 
 1. `sw.js` dosyasındaki `CACHE_NAME` sürümünü artırın (ör. `ilce-bilmece-v2.1.1` → `ilce-bilmece-v2.1.2`). Sürüm değişmezse kullanıcılar önbellekteki eski sürümü görmeye devam eder.
 2. Tüm dosyaları `maps/` klasörü dahil sunucuya yükleyin.
-3. Ziyaret sayacı kullanılıyorsa `sayac.js` dosyasını da sunucuya yükleyin. Bu dosya `.gitignore` ile depo dışında tutulur; `index.html` onu çağırır, dosya yoksa sayaç yüklenmez ve oyun etkilenmez.
+3. Kullanılan eklentilerin klasörlerini `plugins/` içine yükleyin (bkz. [Eklentiler](#eklentiler)).
+
+## Eklentiler
+
+Oyun, depoya eklenmeyen eklentilerle genişletilebilir. Kurulum için eklenti klasörünü sunucudaki `plugins/` klasörüne atmak yeterlidir; kaldırmak için klasörü silin. Eklentiler sunucuda PHP gerektirir. PHP yoksa (ör. statik barındırma) hiçbir eklenti yüklenmez ve oyun etkilenmez.
+
+- `plugins/index.php` (depoda) eklentileri bulur ve yükler. `plugins/<ad>/` klasörleri `.gitignore` ile depo dışında tutulur.
+- `plugins/<ad>/plugin.js` sayfaya yüklenir (zorunlu).
+- `plugins/<ad>/sw.js` service worker'a yüklenir (isteğe bağlı). Eklentinin klasörü `self.EKLENTI_KLASORU` ile bildirilir.
+- Eklentinin ayarları ve diğer dosyaları (PHP, JSON) kendi klasöründe durur.
+- Günün Bilmecesi bitince `document` üzerinde `ilce:gunluk-bitti` olayı yayınlanır.
+- Yalnızca bilgisayarda başlıkta görünmesi gereken düğmeler `desktop-setting` sınıfını alır (mobilde Ayarlar çekmecesi kullanılır).
 
 ## Lisans
 

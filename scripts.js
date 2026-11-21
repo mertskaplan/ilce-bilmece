@@ -1283,9 +1283,12 @@ function finishDaily() {
     dailyState.finishedAt = Date.now();
     saveDailyState();
     recordDailyResult(dailyState);
+    // Eklentiler için kanca (ör. bildirim eklentisi bugünün çözüldüğünü sunucuya bildirir)
+    document.dispatchEvent(new CustomEvent('ilce:gunluk-bitti'));
 
     const correct = dailyState.answers.filter(a => a.correct).length;
-    prepareGame('daily');
+    // Sonuç penceresinin arkasında Klasik Mod hazırlanır; oyunun yalnızca günlük moddan ibaret olmadığı görülsün
+    prepareGame('classic');
     openDailyResults();
     if (correct === DAILY_QUESTION_COUNT) {
         triggerConfetti();

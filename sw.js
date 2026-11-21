@@ -1,5 +1,5 @@
 /* İlçe Bilmece - Saf Önbellek Odaklı Service Worker */
-const CACHE_NAME = 'ilce-bilmece-v2.8.6'; // Sürüm değiştiğinde tüm önbellek sunucudan sıfırlanır
+const CACHE_NAME = 'ilce-bilmece-v2.8.9'; // Sürüm değiştiğinde tüm önbellek sunucudan sıfırlanır
 
 const ASSETS = [
     './',
@@ -14,6 +14,13 @@ const ASSETS = [
 // İlçe haritaları (81 il, toplam ~1,1 MB). Kurulumu yavaşlatmamak için ASSETS'e eklenmez;
 // sayfa yüklendikten sonra 'precache-maps' mesajıyla arka planda önbelleğe alınır.
 const DISTRICT_MAPS = Array.from({ length: 81 }, (_, i) => `./maps/ilceler/${String(i + 1).padStart(2, '0')}.js`);
+
+// Eklentilerin service worker parçaları (plugins/<ad>/sw.js). PHP yoksa (ör. statik barındırma) atlanır.
+try {
+    importScripts('plugins/index.php?sw');
+} catch (err) {
+    // Eklenti yok ya da yükleyici çalışmıyor; oyun eklentisiz devam eder
+}
 
 // 1. Kurulum: Tarayıcı HTTP önbelleğini (Disk Cache) bypass ederek sunucudan taze dosyaları çek
 self.addEventListener('install', (event) => {
@@ -53,6 +60,8 @@ self.addEventListener('activate', (event) => {
 // 3. Getirme (Fetch): Sürüm değişmediyse yıldırım hızında önbellekten sun
 self.addEventListener('fetch', (event) => {
     if (event.request.method !== 'GET') return;
+    // PHP yanıtları (eklenti yükleyici, eklenti uç noktaları) her zaman ağdan gelir, önbelleğe alınmaz
+    if (new URL(event.request.url).pathname.endsWith('.php')) return;
 
     event.respondWith(
         // Sayfa gezinmelerinde sorgu parametreleri (?mod=gunluk, ?utm_source=pwa) yok sayılır:

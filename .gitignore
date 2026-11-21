@@ -1,6 +1,2 @@
-# Ziyaret sayacı eklentisi: yalnızca yayındaki sunucuda bulunur, depoya eklenmez
-sayac.js
-sayac.php
-# Sayaç verisi (sayac.php oluşturur) ve yazma sırasındaki geçici dosyası
-sayac.json
-sayac.json.tmp
+# Eklentiler yalnızca yayındaki sunucuda bulunur, depoya eklenmez; yükleyici (plugins/index.php) eklenir
+plugins/*/

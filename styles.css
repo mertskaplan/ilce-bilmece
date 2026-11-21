@@ -908,7 +908,8 @@ h1 {
     /* Mobilde masaüstü ayar butonlarını gizle, sadece menü butonunu göster */
     #sound-btn,
     #motion-btn,
-    #theme-btn {
+    #theme-btn,
+    .desktop-setting {
         display: none !important;
     }
 
